@@ -1,0 +1,39 @@
+{
+  "groups": [
+    {
+      "name": "data",
+      "type": "org.openmhealth.data.generator.configuration.DataGenerationSettings",
+      "sourceType": "org.openmhealth.data.generator.configuration.DataGenerationSettings"
+    }
+  ],
+  "properties": [
+    {
+      "name": "data.end-date-time",
+      "type": "java.time.OffsetDateTime",
+      "sourceType": "org.openmhealth.data.generator.configuration.DataGenerationSettings"
+    },
+    {
+      "name": "data.mean-inter-point-duration",
+      "type": "java.time.Duration",
+      "sourceType": "org.openmhealth.data.generator.configuration.DataGenerationSettings",
+      "defaultValue": "24h"
+    },
+    {
+      "name": "data.measure-generation-requests",
+      "type": "java.util.List<org.openmhealth.data.generator.domain.MeasureGenerationRequest>",
+      "sourceType": "org.openmhealth.data.generator.configuration.DataGenerationSettings"
+    },
+    {
+      "name": "data.start-date-time",
+      "type": "java.time.OffsetDateTime",
+      "sourceType": "org.openmhealth.data.generator.configuration.DataGenerationSettings"
+    },
+    {
+      "name": "data.suppress-night-time-measures",
+      "type": "java.lang.Boolean",
+      "sourceType": "org.openmhealth.data.generator.configuration.DataGenerationSettings",
+      "defaultValue": false
+    }
+  ],
+  "hints": []
+}

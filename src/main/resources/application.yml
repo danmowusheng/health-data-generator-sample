@@ -1,0 +1,196 @@
+output:
+  # whether to write data points to the "console" or to a "file", defaults to "console"
+  destination: file
+  file:
+    # the file to write the data points to, defaults to "output.json"
+    filename: data/output.json
+    # true if the file should be appended to, false if it should be overwritten, defaults to true
+    append: true
+
+data:
+  header:
+    # the user to associate the data points with, defaults to "some-user"
+    user-id: some-user
+
+    acquisition-provenance:
+      # the name of the source of the data points, defaults to "generator"
+      source-name: generator
+
+  # data is generated according to these optional default values unless overridden in the measures
+  # the earliest date time of the measures to generate, defaults to January 1st, 2014 at noon UTC
+  start-date-time: 2018-01-01T12:00:00Z
+
+  # the latest date time of the measures to generate, defaults to January 1st, 2015 at noon UTC
+  end-date-time: 2018-01-06T12:00:00Z
+
+  # the mean duration between the effective time frames of consecutive measures, defaults to 24 hours
+  # this is specified in ISO8601 duration format, see https://www.ietf.org/rfc/rfc3339.txt page 12
+  mean-inter-point-duration: PT5m
+
+  # true if measures having effective time frames at night should be suppressed, defaults to false
+  # a measure is considered to occur at night if its effective time frame is after 23:00 or before 6:00
+  suppress-night-time-measures: false
+
+  # a list of measure generation requests, with the following structure
+  #
+  # - generator: body-weight             # the name of the measure generator to use, as defined by the generator
+  #   trends:                            # a map of linear trends and trend definitions
+  #     ? weight-in-kg                   # a trend key, as defined by the generator
+  #     : start-date-time: ...           # override for the defaults listed above
+  #       end-date-time: ...
+  #       mean-inter-point-duration: ...
+  #       suppress-night-time-measures: ...
+  #       start-value: 55                # the value the trend starts with
+  #       end-value: 60                  # the value the trend ends with
+  #       minimum-value: 50              # a lower bound on the value, default none
+  #       maximum-value: 65              # an upper bound on the value, default none
+  #       standard-deviation: 0.1        # the standard deviation of the value from the interpolated mean, default 0
+  #
+  # see the documentation at https://github.com/openmhealth/sample-data-generator for more information
+  # by default, no data is generated; uncomment and modify the following configuration as needed
+
+  measure-generation-requests:
+#  - generator: blood-pressure
+#    trends:
+#      ? systolic-in-mmhg
+#      : start-value: 110
+#        end-value: 125
+#        minimum-value: 100
+#        maximum-value: 140
+#        standard-deviation: 3
+#      ? diastolic-in-mmhg
+#      : start-value: 70
+#        end-value: 80
+#        minimum-value: 60
+#        maximum-value: 90
+#        standard-deviation: 3
+#
+#  - generator: body-weight
+#    trends:
+#      ? weight-in-kg
+#      : start-value: 55
+#        end-value: 60
+#        minimum-value: 50
+#        maximum-value: 65
+#        standard-deviation: 0.1
+#
+#  - generator: body-height
+#    trends:
+#      ? height-in-meters
+#      : start-value: 1.75
+#        end-value: 1.75
+#        minimum-value: 1.745
+#        maximum-value: 1.755
+#        standard-deviation: 0
+#
+#    - generator: step-count
+#      mean-inter-point-duration: PT60m
+#      suppress-night-time-measures: true
+#      trends:
+#        ? duration-in-seconds
+#        : start-value: 300
+#          end-value: 150
+#          minimum-value: 10
+#          maximum-value: 1800
+#          standard-deviation: 50
+#        ? steps-per-minute
+#        : start-value: 90
+#          end-value: 90
+#          minimum-value: 30
+#          maximum-value: 125
+#          standard-deviation: 15
+#
+#  - generator: physical-activity
+#    trends:
+#      ? duration-in-seconds
+#      : start-value: 1800
+#        end-value: 1800
+#        minimum-value: 300
+#        maximum-value: 2400
+#        standard-deviation: 600
+#      ? distance-in-meters
+#      : start-value: 5000
+#        end-value: 5000
+#        minimum-value: 500
+#        maximum-value: 20000
+#        standard-deviation: 1000
+#
+#    - generator: heart-rate
+#      trends:
+#        ? rate-in-beats-per-minute
+#        : start-value: 80
+#          end-value: 80
+#          minimum-value: 60
+#          maximum-value: 200
+#          standard-deviation: 12
+
+#  - generator: minutes-moderate-activity
+#    trends:
+#      ? minutes
+#      : start-value: 30
+#        end-value: 30
+#        minimum-value: 5
+#        maximum-value: 120
+#        standard-deviation: 20
+#
+#    - generator: body-fat-percentage
+#      trends:
+#        ? percentage
+#        : start-value: 30
+#          end-value: 30
+#          minimum-value: 28
+#          maximum-value: 32
+#          standard-deviation: 0.25
+#
+#  - generator: ambient-temperature
+#    trends:
+#      ? temperature-in-c
+#      : start-value: 22
+#        end-value: 22
+#        minimum-value: 18
+#        maximum-value: 26
+#        standard-deviation: 1
+#
+#  - generator: blood-glucose
+#    trends:
+#      ? glucose-in-mg-per-dl
+#      : start-value: 90
+#        end-value: 100
+#        minimum-value: 85
+#        maximum-value: 140
+#        standard-deviation: 5
+#
+#  - generator: body-temperature
+#    trends:
+#      ? temperature-in-c
+#      : start-value: 36.8
+#        end-value: 36.8
+#        minimum-value: 36.4
+#        maximum-value: 38
+#        standard-deviation: 0.3
+#
+#    - generator: sleep-duration
+#      trends:
+#        ? duration-in-hours
+#        : start-value: 8
+#          end-value: 8
+#          minimum-value: 4
+#          maximum-value: 12
+#          standard-deviation: 0.75
+#
+#   只单纯在yml文件中定义generator无法在初始化的时候生成，需要使用@Component注解定义到Spring容器中
+    - generator: oxygen-saturation-percentage
+      trends:
+        ? percentage
+        : start-value: 95
+          end-value: 95
+          minimum-value: 80
+          maximum-value: 98
+          standard-deviation: 0.25
+        ? L-per-minute
+        : start-value: 0
+          end-value: 0
+          minimum-value: 0
+          maximum-value: 0
+          standard-deviation: 0
+
