@@ -63,10 +63,13 @@ public class FileSystemDataPointWritingServiceImpl implements DataPointWritingSe
 
         long written = 0;
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, append))) {
 
             for (DataPoint dataPoint : dataPoints) {
                 // this simplifies direct imports into MongoDB
+                String classInfo = dataPoint.getBody().getClass().getName();
+                writer.write(classInfo);
+                writer.write("#");
                 dataPoint.setAdditionalProperty("id", dataPoint.getHeader().getId());
 
                 String valueAsString = objectMapper.writeValueAsString(dataPoint);
@@ -85,5 +88,9 @@ public class FileSystemDataPointWritingServiceImpl implements DataPointWritingSe
 
     public String getFilename() {
         return filename;
+    }
+
+    public void setAppend(Boolean append) {
+        this.append = append;
     }
 }

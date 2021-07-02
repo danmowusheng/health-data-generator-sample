@@ -18,14 +18,14 @@ data:
 
   # data is generated according to these optional default values unless overridden in the measures
   # the earliest date time of the measures to generate, defaults to January 1st, 2014 at noon UTC
-  start-date-time: 2018-01-01T12:00:00Z
+  start-date-time: 2014-01-01T12:00:00Z
 
   # the latest date time of the measures to generate, defaults to January 1st, 2015 at noon UTC
-  end-date-time: 2018-01-06T12:00:00Z
+  end-date-time: 2014-01-01T20:00:00Z
 
   # the mean duration between the effective time frames of consecutive measures, defaults to 24 hours
   # this is specified in ISO8601 duration format, see https://www.ietf.org/rfc/rfc3339.txt page 12
-  mean-inter-point-duration: PT5m
+  mean-inter-point-duration: PT3m
 
   # true if measures having effective time frames at night should be suppressed, defaults to false
   # a measure is considered to occur at night if its effective time frame is after 23:00 or before 6:00
@@ -83,22 +83,22 @@ data:
 #        maximum-value: 1.755
 #        standard-deviation: 0
 #
-#    - generator: step-count
-#      mean-inter-point-duration: PT60m
-#      suppress-night-time-measures: true
-#      trends:
-#        ? duration-in-seconds
-#        : start-value: 300
-#          end-value: 150
-#          minimum-value: 10
-#          maximum-value: 1800
-#          standard-deviation: 50
-#        ? steps-per-minute
-#        : start-value: 90
-#          end-value: 90
-#          minimum-value: 30
-#          maximum-value: 125
-#          standard-deviation: 15
+    - generator: step-count
+      mean-inter-point-duration: PT60m
+      suppress-night-time-measures: true
+      trends:
+        ? duration-in-seconds
+        : start-value: 300
+          end-value: 150
+          minimum-value: 10
+          maximum-value: 1800
+          standard-deviation: 50
+        ? steps-per-minute
+        : start-value: 90
+          end-value: 90
+          minimum-value: 30
+          maximum-value: 125
+          standard-deviation: 15
 #
 #  - generator: physical-activity
 #    trends:
@@ -115,14 +115,14 @@ data:
 #        maximum-value: 20000
 #        standard-deviation: 1000
 #
-#    - generator: heart-rate
-#      trends:
-#        ? rate-in-beats-per-minute
-#        : start-value: 80
-#          end-value: 80
-#          minimum-value: 60
-#          maximum-value: 200
-#          standard-deviation: 12
+    - generator: heart-rate
+      trends:
+        ? rate-in-beats-per-minute
+        : start-value: 80
+          end-value: 80
+          minimum-value: 60
+          maximum-value: 200
+          standard-deviation: 12
 
 #  - generator: minutes-moderate-activity
 #    trends:
@@ -179,18 +179,18 @@ data:
 #          standard-deviation: 0.75
 #
 #   只单纯在yml文件中定义generator无法在初始化的时候生成，需要使用@Component注解定义到Spring容器中
-    - generator: oxygen-saturation-percentage
-      trends:
-        ? percentage
-        : start-value: 95
-          end-value: 95
-          minimum-value: 80
-          maximum-value: 98
-          standard-deviation: 0.25
-        ? L-per-minute
-        : start-value: 0
-          end-value: 0
-          minimum-value: 0
-          maximum-value: 0
-          standard-deviation: 0
+#    - generator: oxygen-saturation
+#      trends:
+#        ? percentage
+#        : start-value: 95
+#          end-value: 95
+#          minimum-value: 80
+#          maximum-value: 98
+#          standard-deviation: 2
+#        ? L-per-minute
+#        : start-value: 0
+#          end-value: 0
+#          minimum-value: 0
+#          maximum-value: 0
+#          standard-deviation: 0
 

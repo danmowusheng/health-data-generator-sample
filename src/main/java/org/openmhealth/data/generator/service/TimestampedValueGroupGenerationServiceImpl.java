@@ -43,7 +43,7 @@ public class TimestampedValueGroupGenerationServiceImpl implements TimestampedVa
 
     @Override
     public Iterable<TimestampedValueGroup> generateValueGroups(MeasureGenerationRequest request) {
-        //获取平均间隔？
+        //获取每个点之间的平均间隔时间，并使用s为单位转成double类型存储
         ExponentialDistribution interPointDurationDistribution =
                 new ExponentialDistribution(request.getMeanInterPointDuration().getSeconds());
         //获取总时长

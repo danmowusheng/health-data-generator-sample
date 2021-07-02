@@ -78,7 +78,7 @@ public abstract class AbstractDataPointGeneratorImpl<T extends Measure>
             else {
                 // use the duration to calculate the end date time of the interval
                 if (effectiveTimeInterval.getDuration() != null) {
-
+                    //函数式编程BiFunction
                     BiFunction<OffsetDateTime, Long, OffsetDateTime> plusFunction;
 
                     switch (effectiveTimeInterval.getDuration().getTypedUnit()) {
