@@ -33,6 +33,7 @@ import java.util.List;
 @Component
 @ConfigurationProperties("data")
 public class DataGenerationSettings {
+    private String userID = "some-user";
     //开始时间
     private OffsetDateTime startDateTime = OffsetDateTime.of(2014, 1, 1, 12, 0, 0, 0, ZoneOffset.UTC);
     //结束时间
@@ -43,6 +44,14 @@ public class DataGenerationSettings {
     private Boolean suppressNightTimeMeasures = false;
     //指标产生器请求?包括产生器名称以及这个字段以上的一些字段，如开始时间等
     private List<MeasureGenerationRequest> measureGenerationRequests = new ArrayList<>();
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
 
     public OffsetDateTime getStartDateTime() {
         return startDateTime;

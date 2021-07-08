@@ -18,7 +18,7 @@ package org.openmhealth.data.generator.service;
 
 import org.openmhealth.data.generator.domain.TimestampedValueGroup;
 import org.openmhealth.schema.domain.omh.DurationUnitValue;
-import org.openmhealth.schema.domain.omh.SleepDuration;
+import org.openmhealth.schema.domain.omh.SleepDuration1;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
@@ -33,7 +33,7 @@ import static org.openmhealth.schema.domain.omh.TimeInterval.ofStartDateTimeAndD
  */
 @Component
 public class SleepDurationDataPointGenerator
-        extends AbstractDataPointGeneratorImpl<SleepDuration> {
+        extends AbstractDataPointGeneratorImpl<SleepDuration1> {
 
     public static final String DURATION_KEY = "duration-in-hours";
 
@@ -53,11 +53,11 @@ public class SleepDurationDataPointGenerator
     }
 
     @Override
-    public SleepDuration newMeasure(TimestampedValueGroup valueGroup) {
+    public SleepDuration1 newMeasure(TimestampedValueGroup valueGroup) {
 
         DurationUnitValue duration = new DurationUnitValue(HOUR, valueGroup.getValue(DURATION_KEY));
 
-        SleepDuration.Builder builder = new SleepDuration.Builder(duration)
+        SleepDuration1.Builder builder = new SleepDuration1.Builder(duration)
                 .setEffectiveTimeFrame(ofStartDateTimeAndDuration(valueGroup.getTimestamp(), duration));
 
         return builder.build();

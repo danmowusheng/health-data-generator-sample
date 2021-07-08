@@ -1,10 +1,7 @@
 package org.openmhealth.data.generator.controller;
 
 
-
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -13,11 +10,10 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Sets;
+import jdk.internal.jimage.ImageStrings;
 import org.openmhealth.data.generator.Application;
 import org.openmhealth.data.generator.configuration.DataGenerationSettings;
 import org.openmhealth.data.generator.converter.OffsetDateTime2String;
-import org.openmhealth.data.generator.converter.StringToDurationConverter;
-import org.openmhealth.data.generator.converter.StringToOffsetDateTimeConverter;
 import org.openmhealth.data.generator.domain.*;
 import org.openmhealth.data.generator.service.*;
 import org.openmhealth.schema.domain.omh.*;
@@ -25,7 +21,6 @@ import org.openmhealth.schema.domain.omh.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.*;
 
@@ -33,12 +28,7 @@ import javax.annotation.PostConstruct;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.io.*;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.time.Duration;
 import java.time.OffsetDateTime;
-import java.time.temporal.TemporalUnit;
 import java.util.*;
 import static java.time.temporal.ChronoUnit.SECONDS;
 
@@ -72,11 +62,44 @@ public class DataGeneratorController {
     private Map<String, DataPointGenerator<?>> dataPointGeneratorMap = new HashMap<>();
 
     private OffsetDateTime2String offsetDateTime2String = new OffsetDateTime2String();
+    private List<DataGenerationSettings> dataGenerationSettingsList = new ArrayList<>();
 
     /**
      * use hashMap to restore each dataPoint
      */
-    private Map<String, Iterable<? extends DataPoint<?>>> dataPointMap = new HashMap<>();
+    //private Map<String, Iterable<? extends DataPoint<?>>> dataPointMap = new HashMap<>();
+
+    @PostConstruct
+    public void initializeDataPointGenerationSettings(){
+        System.out.println("Start initial all dataPointGeneratorsSettings...");
+
+        int size = 10;
+        while (size!=0){
+            size--;
+            String userID = getId(size);
+            DataGenerationSettings newSetting = new DataGenerationSettings();
+            //newSetting.setUserID(userID);
+            newSetting.setUserID(userID);
+            newSetting.setStartDateTime(dataGenerationSettings.getStartDateTime());
+            newSetting.setEndDateTime(dataGenerationSettings.getEndDateTime());
+            newSetting.setMeanInterPointDuration(dataGenerationSettings.getMeanInterPointDuration());
+            newSetting.setMeasureGenerationRequests(dataGenerationSettings.getMeasureGenerationRequests());
+            dataGenerationSettingsList.add(newSetting);
+            System.out.println(userID+"的数据产生器设置初始化成功!"+" 开始时间:"+newSetting.getStartDateTime());
+        }
+        System.out.println("initialization done");
+    }
+
+    public String getId(int n){
+        StringBuilder sb = new StringBuilder();
+        int len = 3-(""+n).length();
+        while (len!=0){
+            sb.append(0);
+            len--;
+        }
+        sb.append(n);
+        return sb.toString();
+    }
 
     /**
     * @Description: this initialized all dataPointGenerators, @PostConstruct is an annotation used to load this func when application is started
@@ -105,10 +128,18 @@ public class DataGeneratorController {
     @GetMapping("/generateDataPoints")
     public void generateDataPoints() throws Exception{
         System.out.println("开始生成数据...");
-        setMeasureGenerationRequestDefaults();
-        OffsetDateTime startTime  = dataGenerationSettings.getStartDateTime();
 
-        if (!areMeasureGenerationRequestsValid(dataGenerationSettings.getMeasureGenerationRequests())) {
+        //为每一位用户产生数据
+        for (DataGenerationSettings dataGenerationSetting: dataGenerationSettingsList){
+            generateDataForSettings(dataGenerationSetting);
+        }
+
+    }
+
+    public void generateDataForSettings(DataGenerationSettings dataGenerationSetting) throws IOException {
+        OffsetDateTime startTime  = dataGenerationSetting.getStartDateTime();
+
+        if (!areMeasureGenerationRequestsValid(dataGenerationSetting.getMeasureGenerationRequests())) {
             return;
         }
 
@@ -117,7 +148,7 @@ public class DataGeneratorController {
 
         String fileName = root + offsetDateTime2String.convert(startTime) + ".json";
         System.out.println("fileName is: "+ fileName);
-        dataPointWritingService.clearFile();
+        //dataPointWritingService.clearFile();
         dataPointWritingService.setFilename(fileName);
         dataPointWritingService.setAppend(true);
         System.out.println("True fileName : "+ dataPointWritingService.getFilename());
@@ -132,26 +163,29 @@ public class DataGeneratorController {
              * 这里"?"代表的是一种数据类型,如HeartRate
              */
             Iterable<? extends DataPoint<?>> dataPoints = dataPointGenerator.generateDataPoints(valueGroups);
+            for (DataPoint dataPoint:dataPoints){
+
+            }
 
             /**
              * 注释中是产生csv文件的代码
-            String[] head = new String[]{dataPointGenerator.getName(), "timestamp"};
-            List<List<Object>> values = new ArrayList<>();
-            for(TimestampedValueGroup group: valueGroups){
-                List<Object> row = new ArrayList<>();
-                for(Map.Entry<String, BoundedRandomVariableTrend> trendEntry :request.getTrends().entrySet()){
-                    String key = trendEntry.getKey();
-                    System.out.println("key: "+key);
-                    if(key.equals("percentage")){
-                        row.add(group.getValue(key));
-                    }
-                    System.out.println("value: "+group.getValue(key));
-                }
-                row.add(group.getTimestamp());
-                values.add(row);
-            }
-            createCSV(head, values, "OxygenSaturation.csv");
-            **/
+             String[] head = new String[]{dataPointGenerator.getName(), "timestamp"};
+             List<List<Object>> values = new ArrayList<>();
+             for(TimestampedValueGroup group: valueGroups){
+             List<Object> row = new ArrayList<>();
+             for(Map.Entry<String, BoundedRandomVariableTrend> trendEntry :request.getTrends().entrySet()){
+             String key = trendEntry.getKey();
+             System.out.println("key: "+key);
+             if(key.equals("percentage")){
+             row.add(group.getValue(key));
+             }
+             System.out.println("value: "+group.getValue(key));
+             }
+             row.add(group.getTimestamp());
+             values.add(row);
+             }
+             createCSV(head, values, "OxygenSaturation.csv");
+             **/
 
             long written = dataPointWritingService.writeDataPoints(dataPoints);
             totalWritten += written;
@@ -160,16 +194,15 @@ public class DataGeneratorController {
         }
 
         log.info("A total of {} data point(s) have been written.", totalWritten);
+
     }
-
-
     /**
-    * @Description: generate data for this application
+    * @Description: get dataPoints from this application
     * @Param: DataGenerationRequest dataGenerationRequest
     * @author: LJ
     * @Date: 2021/6/22
     **/
-    @ApiOperation(value = "提交一次数据获取请求,生成一段时间内的dataPoints")
+    @ApiOperation(value = "提交一次数据获取请求,获取一段时间内的dataPoints")
     @PostMapping("/getDataPoints")
     public List<DataPoint<?>> getDataPoints(@RequestBody MeasureRequest measureRequest) throws Exception {
         System.out.println("开始获取健康数据...");
@@ -186,7 +219,6 @@ public class DataGeneratorController {
         System.out.println("结束时间为: "+endTime);
         //利用startTime以及endTime在文件中查找合适的健康数据
         //默认不超过一天,并且在同一天
-
 
         //1.load file
         String root = "data/";
@@ -208,6 +240,7 @@ public class DataGeneratorController {
             objectMapper.registerModule(new JavaTimeModule());
             List<DataPoint<?>> dataPointList = new ArrayList<>();
             long nums = 0;
+            //2.json to dataPoint，并判断时间是否合适
             while ((jsonStr = reader.readLine()) != null) {
                 nums++;
                 //解析一行json数据，即一个dataPoint
@@ -216,6 +249,7 @@ public class DataGeneratorController {
                 Class HealthDataType = Class.forName(infos[0]);
                 JavaType javaType = TypeFactory.defaultInstance().constructType(DataPoint.class, HealthDataType);
                 DataPoint<?> dataPoint = objectMapper.readValue(infos[1], javaType);
+
                 //用反射获取当前这个dataPoint的健康数据类型T的对象
                 //getBody获取的是一个Map对象
                 /**
@@ -245,23 +279,17 @@ public class DataGeneratorController {
                 if(isTimeStampValid(TimeMap,startTime,endTime)){
                     dataPointList.add(dataPoint);
                 }
-                //System.out.println("class:"+dataPoint.getBody().getClass().getName()+" infos: "+ dataPoint.getBody().toString());
-
-                //System.out.println("class info: "+Class.forName(infos[0])+" value: ?" + " timestamp: "+dataPoint.getHeader().getCreationDateTime());
             }
             fileReader.close();
             reader.close();
-            //Iterable<? extends DataPoint<?>> dataPoints = dataPointList;
-            System.out.println("总共数据: "+nums+" 总共有效数据: "+dataPointList.size());
+
+            System.out.println("总共数据: "+nums+" 有效数据: "+dataPointList.size());
+            //3.返回这个list
             return dataPointList;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
-
-        //2.json to dataPoint，并判断时间是否合适
-
-        //3.返回这个list
     }
 
     /**
@@ -291,51 +319,13 @@ public class DataGeneratorController {
 
 
         /**疯狂嵌套的map尝试，不过思路太直了
-        System.out.println("class"+map.getClass().getName()+" infos: "+ map.toString());
-        System.out.println("mapInfo:");
-        for (Object key:map.keySet()){
-            if (key.equals("effective_time_frame")){
-                HashMap value = (HashMap)map.get(key);
-                StringToOffsetDateTimeConverter stringToOffsetDateTimeConverter = new StringToOffsetDateTimeConverter();
-                StringToDurationConverter stringToDurationConverter = new StringToDurationConverter();
-
-                for (Object k:value.keySet()){
-                    System.out.println("key: "+k);
-                    if (k.equals("date_time")){
-                        result.setDateTime(stringToOffsetDateTimeConverter.convert(value.get(k).toString()));
-                        System.out.println("dateTime: "+result.getDateTime());
-                        break;
-                    }else {
-                        System.out.println("time_interval: "+value.get(k).toString());
-                        for (Object kk:value.keySet()){
-                            if (k.equals("date_time")){
-                                result.setDateTime(stringToOffsetDateTimeConverter.convert(value.get(k).toString()));
-                                System.out.println("dateTime: "+result.getDateTime());
-                            }else {
-                                long duration = 0;
-                                HashMap mmmap = (HashMap)value.get(kk);
-                                for (Object kkk:mmmap.keySet()){
-                                    if(kkk.equals("value"))
-                                        duration = (long)mmmap.get(kkk);
-                                }
-                                DurationUnit durationUnit = DurationUnit.SECOND;
-                                result.setTimeInterval(
-                                        TimeInterval.ofStartDateTimeAndDuration(result.getDateTime(),
-                                                new DurationUnitValue(durationUnit, duration)));
-                                System.out.println("TimeInterval: "+result.getTimeInterval().toString());
-                            }
-                        }
-                    }
-                }
-            }
-        }
          **/
 
         if(result.getTimeInterval()!=null){
             //endTime==null
             TimeInterval curTime = result.getTimeInterval();
-            System.out.println(curTime.getStartDateTime().toString());
-            System.out.println((curTime.getStartDateTime().plus(curTime.getDuration().getValue().longValue(), SECONDS)));
+            //System.out.println(curTime.getStartDateTime().toString());
+            //System.out.println((curTime.getStartDateTime().plus(curTime.getDuration().getValue().longValue(), SECONDS)));
             if(curTime.getStartDateTime().isBefore(startTime)||
                     (curTime.getStartDateTime().plus(curTime.getDuration().getValue().longValue(), SECONDS)).isAfter(endTime)){
                 return false;
@@ -408,7 +398,6 @@ public class DataGeneratorController {
         log.info("A total of {} data point(s) have been written.", totalWritten);
         return "Request is Valid, generates data:"+totalWritten;
     }
-
 
 
     private void setMeasureGenerationRequestDefaults() {

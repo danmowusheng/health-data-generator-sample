@@ -19,7 +19,7 @@ package org.openmhealth.data.generator.service;
 import com.google.common.collect.Sets;
 import org.openmhealth.data.generator.domain.TimestampedValueGroup;
 import org.openmhealth.schema.domain.omh.DurationUnitValue;
-import org.openmhealth.schema.domain.omh.StepCount;
+import org.openmhealth.schema.domain.omh.StepCount1;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -32,7 +32,7 @@ import static org.openmhealth.schema.domain.omh.TimeInterval.ofStartDateTimeAndD
  * @author Emerson Farrugia
  */
 @Service
-public class StepCountDataPointGenerator extends AbstractDataPointGeneratorImpl<StepCount> {
+public class StepCountDataPointGenerator extends AbstractDataPointGeneratorImpl<StepCount1> {
 
     public static final String STEPS_PER_MINUTE_KEY = "steps-per-minute";
     public static final String DURATION_KEY = "duration-in-seconds";
@@ -53,14 +53,14 @@ public class StepCountDataPointGenerator extends AbstractDataPointGeneratorImpl<
     }
 
     @Override
-    public StepCount newMeasure(TimestampedValueGroup valueGroup) {
+    public StepCount1 newMeasure(TimestampedValueGroup valueGroup) {
 
         DurationUnitValue duration = new DurationUnitValue(SECOND, valueGroup.getValue(DURATION_KEY));
         double stepsPerMin = valueGroup.getValue(STEPS_PER_MINUTE_KEY);
 
         Double stepCount = stepsPerMin * duration.getValue().doubleValue() / 60.0;
 
-        return new StepCount.Builder(stepCount.longValue())
+        return new StepCount1.Builder(stepCount.longValue())
                 .setEffectiveTimeFrame(ofStartDateTimeAndDuration(valueGroup.getTimestamp(), duration))
                 .build();
     }

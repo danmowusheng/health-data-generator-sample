@@ -33,6 +33,12 @@
       "type": "java.lang.Boolean",
       "sourceType": "org.openmhealth.data.generator.configuration.DataGenerationSettings",
       "defaultValue": false
+    },
+    {
+      "name": "data.user-i-d",
+      "type": "java.lang.String",
+      "sourceType": "org.openmhealth.data.generator.configuration.DataGenerationSettings",
+      "defaultValue": "some-user"
     }
   ],
   "hints": []
