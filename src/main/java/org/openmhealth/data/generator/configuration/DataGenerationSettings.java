@@ -92,4 +92,16 @@ public class DataGenerationSettings {
     public void setMeasureGenerationRequests(List<MeasureGenerationRequest> measureGenerationRequests) {
         this.measureGenerationRequests = measureGenerationRequests;
     }
+
+    @Override
+    public String toString() {
+        return "DataGenerationSettings{" +
+                "userID='" + userID + '\'' +
+                ", startDateTime=" + startDateTime +
+                ", endDateTime=" + endDateTime +
+                ", meanInterPointDuration=" + meanInterPointDuration +
+                ", suppressNightTimeMeasures=" + suppressNightTimeMeasures +
+                ", measureGenerationRequests=" + measureGenerationRequests +
+                '}';
+    }
 }

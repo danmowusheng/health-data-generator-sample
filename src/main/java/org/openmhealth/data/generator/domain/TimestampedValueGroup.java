@@ -64,4 +64,12 @@ public class TimestampedValueGroup {
     public Double getValue(String key) {
         return this.values.get(key);
     }
+
+    @Override
+    public String toString() {
+        return "TimestampedValueGroup{" +
+                "timestamp=" + timestamp +
+                ", values=" + values +
+                '}';
+    }
 }

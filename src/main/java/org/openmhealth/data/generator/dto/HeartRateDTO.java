@@ -1,5 +1,8 @@
 package org.openmhealth.data.generator.dto;
 
+import org.openmhealth.data.generator.constant.HeartRate;
+import org.openmhealth.schema.serializer.SerializationConstructor;
+
 /**
  * @ClassName HeartRateDTO
  * @Description 心率
@@ -7,7 +10,7 @@ package org.openmhealth.data.generator.dto;
  * @Date 2021/7/7 9:33
  * @Version 1.0
  */
-public class HeartRateDTO {
+public class HeartRateDTO extends MeasureDTO{
 
     /*
     心率
@@ -15,12 +18,46 @@ public class HeartRateDTO {
     private Integer heartRate;
 
     /*
-    时间戳
+    测量类型
      */
-    private Long timeStamp;
+    private HeartRate mField;
 
-    /*
-    必需label
-     */
-    private Integer mField;
+    @SerializationConstructor
+    protected HeartRateDTO() {
+    }
+
+    public static class Builder extends MeasureDTO.Builder<HeartRateDTO, Builder>{
+
+        private Integer heartRate;
+        private HeartRate mField;
+
+        public Builder setHeartRate(Integer heartRate) {
+            this.heartRate = heartRate;
+            return this;
+        }
+
+        public Builder setmField(HeartRate mField) {
+            this.mField = mField;
+            return this;
+        }
+
+        @Override
+        public HeartRateDTO build() {
+            return new HeartRateDTO(this);
+        }
+    }
+
+    private HeartRateDTO(Builder builder) {
+        super(builder);
+        this.mField = builder.mField;
+        this.heartRate = builder.heartRate;
+    }
+
+    @Override
+    public String toString() {
+        return "HeartRateDTO{" +
+                "heartRate=" + heartRate +
+                ", mField=" + mField +
+                '}';
+    }
 }

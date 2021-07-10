@@ -27,6 +27,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.openmhealth.data.generator.Application;
 import org.openmhealth.data.generator.configuration.DataGenerationSettings;
+import org.openmhealth.data.generator.constant.MetricName;
 import org.openmhealth.data.generator.converter.OffsetDateTime2String;
 import org.openmhealth.data.generator.domain.*;
 import org.openmhealth.data.generator.service.*;
@@ -173,6 +174,10 @@ public class DataPushController {
         String dataString = objectMapper.writeValueAsString(data);
         System.out.println("请求端上传的数据为:"+ dataString);
         return "接收成功";
+    }
+
+    public void test(){
+
     }
 
     private void setMeasureGenerationRequestDefaults() {

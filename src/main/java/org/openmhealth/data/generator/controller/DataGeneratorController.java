@@ -10,12 +10,19 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Sets;
-import jdk.internal.jimage.ImageStrings;
 import org.openmhealth.data.generator.Application;
 import org.openmhealth.data.generator.configuration.DataGenerationSettings;
+import org.openmhealth.data.generator.constant.BodyWeight;
+import org.openmhealth.data.generator.constant.HeartRate;
 import org.openmhealth.data.generator.converter.OffsetDateTime2String;
 import org.openmhealth.data.generator.domain.*;
+import org.openmhealth.data.generator.dto.BodyWeightDTO;
+import org.openmhealth.data.generator.dto.HeartRateDTO;
+import org.openmhealth.data.generator.dto.MeasureDTO;
+import org.openmhealth.data.generator.dto.Spo2DTO;
 import org.openmhealth.data.generator.service.*;
+import org.openmhealth.data.generator.transfer.BodyWeightDTOtransfer;
+import org.openmhealth.data.generator.transfer.Transfer;
 import org.openmhealth.schema.domain.omh.*;
 
 import org.slf4j.Logger;
@@ -54,6 +61,9 @@ public class DataGeneratorController {
     private List<DataPointGenerator> dataPointGenerators = new ArrayList<>();
 
     @Autowired
+    private List<Transfer> dataTransfer = new ArrayList<>();
+
+    @Autowired
     private TimestampedValueGroupGenerationService valueGroupGenerationService;
 
     @Autowired
@@ -61,18 +71,16 @@ public class DataGeneratorController {
 
     private Map<String, DataPointGenerator<?>> dataPointGeneratorMap = new HashMap<>();
 
+    private Map<String, Transfer<?>> dataTransferMap = new HashMap<>();
+
     private OffsetDateTime2String offsetDateTime2String = new OffsetDateTime2String();
     private List<DataGenerationSettings> dataGenerationSettingsList = new ArrayList<>();
 
-    /**
-     * use hashMap to restore each dataPoint
-     */
-    //private Map<String, Iterable<? extends DataPoint<?>>> dataPointMap = new HashMap<>();
 
     @PostConstruct
     public void initializeDataPointGenerationSettings(){
         System.out.println("Start initial all dataPointGeneratorsSettings...");
-
+        System.out.println(dataGenerationSettings.toString());
         int size = 10;
         while (size!=0){
             size--;
@@ -86,9 +94,11 @@ public class DataGeneratorController {
             newSetting.setMeasureGenerationRequests(dataGenerationSettings.getMeasureGenerationRequests());
             dataGenerationSettingsList.add(newSetting);
             System.out.println(userID+"的数据产生器设置初始化成功!"+" 开始时间:"+newSetting.getStartDateTime());
+            System.out.println(newSetting.toString());
         }
         System.out.println("initialization done");
     }
+
 
     public String getId(int n){
         StringBuilder sb = new StringBuilder();
@@ -109,14 +119,23 @@ public class DataGeneratorController {
     **/
     @PostConstruct
     public void initializeDataPointGenerators() {
-        System.out.println("Start initial all dataPointGenerators...");
+        System.out.println("初始化所有的dataGenerator...");
+
         for (DataPointGenerator generator : dataPointGenerators) {
             dataPointGeneratorMap.put(generator.getName(), generator);
             System.out.println(generator.getName());
         }
+        System.out.println("共初始化"+dataPointGeneratorMap.size()+"个数据产生器");
 
-        System.out.println("initialization done");
+        System.out.println("初始化所有需要的转换器...");
+        for (Transfer transfer:dataTransfer){
+            dataTransferMap.put(transfer.getName(), transfer);
+            System.out.println(transfer.getName());
+        }
+        System.out.println("共初始化"+dataTransferMap.size()+"个转换器");
+        System.out.println("初始化完成");
     }
+
 
     /**
     * @Description: 需要一个常驻方法，一直生成健康数据并存入文件中，并且可以根据需要进行拓展，按照日期存储文件
@@ -126,7 +145,7 @@ public class DataGeneratorController {
     **/
     @ApiOperation(value = "提交一次数据请求,生成从当前时间或指定时间开始的一天健康数据")
     @GetMapping("/generateDataPoints")
-    public void generateDataPoints() throws Exception{
+    public void generateDataPoints() throws IOException{
         System.out.println("开始生成数据...");
 
         //为每一位用户产生数据
@@ -138,13 +157,18 @@ public class DataGeneratorController {
 
     public void generateDataForSettings(DataGenerationSettings dataGenerationSetting) throws IOException {
         OffsetDateTime startTime  = dataGenerationSetting.getStartDateTime();
-
+        System.out.println("userId:"+dataGenerationSetting.getUserID());
+        setMeasureGenerationRequestDefaults(dataGenerationSetting);
         if (!areMeasureGenerationRequestsValid(dataGenerationSetting.getMeasureGenerationRequests())) {
             return;
         }
 
         long totalWritten = 0;
-        String root = "data/";
+        String root = "data/"+dataGenerationSetting.getUserID()+"/";
+        File parent = new File(root);
+        if(!parent.exists()){
+            parent.mkdir();
+        }
 
         String fileName = root + offsetDateTime2String.convert(startTime) + ".json";
         System.out.println("fileName is: "+ fileName);
@@ -152,9 +176,22 @@ public class DataGeneratorController {
         dataPointWritingService.setFilename(fileName);
         dataPointWritingService.setAppend(true);
         System.out.println("True fileName : "+ dataPointWritingService.getFilename());
+        //为每一种数据类型建议一个文件夹表示其类型信息
         for (MeasureGenerationRequest request : dataGenerationSettings.getMeasureGenerationRequests()) {
-
+            System.out.println("dataTransfer Info: "+dataTransferMap.toString());
+            System.out.println("当前数据产生器为: "+request.getGeneratorName());
+            if(!dataTransferMap.keySet().contains(request.getGeneratorName()))break;
             Iterable<TimestampedValueGroup> valueGroups = valueGroupGenerationService.generateValueGroups(request);
+            System.out.println("对应转换器："+dataTransferMap.get(request.getGeneratorName()));
+            Iterable<? extends MeasureDTO> DTOlist =  (dataTransferMap.get(request.getGeneratorName())).transferDatas(valueGroups);
+
+            String filePath = root + request.getGeneratorName()+"/";
+            File leaf = new File(filePath);
+            if(!leaf.exists()){
+                leaf.mkdir();
+            }
+
+
             DataPointGenerator<?> dataPointGenerator = dataPointGeneratorMap.get(request.getGeneratorName());
             /**
              * Iterable可以简单理解为实现了一个可以存放东西的容器
@@ -163,9 +200,11 @@ public class DataGeneratorController {
              * 这里"?"代表的是一种数据类型,如HeartRate
              */
             Iterable<? extends DataPoint<?>> dataPoints = dataPointGenerator.generateDataPoints(valueGroups);
-            for (DataPoint dataPoint:dataPoints){
 
+            for (MeasureDTO measureDTO:DTOlist){
+                System.out.println(measureDTO.toString());
             }
+
 
             /**
              * 注释中是产生csv文件的代码
@@ -422,6 +461,28 @@ public class DataGeneratorController {
         }
     }
 
+    private void setMeasureGenerationRequestDefaults(DataGenerationSettings dataGenerationSetting) {
+
+        for (MeasureGenerationRequest request : dataGenerationSetting.getMeasureGenerationRequests()) {
+
+            if (request.getStartDateTime() == null) {
+                request.setStartDateTime(dataGenerationSetting.getStartDateTime());
+            }
+
+            if (request.getEndDateTime() == null) {
+                request.setEndDateTime(dataGenerationSetting.getEndDateTime());
+            }
+
+            if (request.getMeanInterPointDuration() == null) {
+                request.setMeanInterPointDuration(dataGenerationSetting.getMeanInterPointDuration());
+            }
+
+            if (request.isSuppressNightTimeMeasures() == null) {
+                request.setSuppressNightTimeMeasures(dataGenerationSetting.isSuppressNightTimeMeasures());
+            }
+        }
+    }
+
     /**
      * @return true if the requests are valid, false otherwise
      */
@@ -473,6 +534,7 @@ public class DataGeneratorController {
 
         return true;
     }
+
 
     /**
     * @Description:创建仅含值与时间戳的csv文件

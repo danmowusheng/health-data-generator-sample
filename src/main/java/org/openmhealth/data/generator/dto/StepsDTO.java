@@ -1,5 +1,7 @@
 package org.openmhealth.data.generator.dto;
 
+import org.openmhealth.schema.serializer.SerializationConstructor;
+
 /**
  * @ClassName StepsDTO
  * @Description 步数
@@ -7,15 +9,41 @@ package org.openmhealth.data.generator.dto;
  * @Date 2021/7/7 9:20
  * @Version 1.0
  */
-public class StepsDTO {
+public class StepsDTO extends MeasureDTO{
 
     /*
     步数
      */
     private Integer stepsCount;
 
-    /*
-    时间戳
-     */
-    private Long timeStamp;
+    @SerializationConstructor
+    protected StepsDTO() {
+    }
+
+    public static class Builder extends MeasureDTO.Builder<StepsDTO, StepsDTO.Builder>{
+
+        private Integer stepsCount;
+
+        public Builder setStepsCount(Integer stepsCount) {
+            this.stepsCount = stepsCount;
+            return this;
+        }
+
+        @Override
+        public StepsDTO build() {
+            return new StepsDTO(this);
+        }
+    }
+
+    private StepsDTO(Builder builder) {
+        super(builder);
+        this.stepsCount = builder.stepsCount;
+    }
+
+    @Override
+    public String toString() {
+        return "StepsDTO{" +
+                "stepsCount=" + stepsCount +
+                '}';
+    }
 }

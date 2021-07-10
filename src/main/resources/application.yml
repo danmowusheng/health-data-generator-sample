@@ -65,14 +65,14 @@ data:
 #        maximum-value: 90
 #        standard-deviation: 3
 #
-#  - generator: body-weight
-#    trends:
-#      ? weight-in-kg
-#      : start-value: 55
-#        end-value: 60
-#        minimum-value: 50
-#        maximum-value: 65
-#        standard-deviation: 0.1
+    - generator: body-weight
+      trends:
+        ? weight-in-kg
+        : start-value: 55
+          end-value: 60
+          minimum-value: 50
+          maximum-value: 65
+          standard-deviation: 0.1
 #
 #  - generator: body-height
 #    trends:
