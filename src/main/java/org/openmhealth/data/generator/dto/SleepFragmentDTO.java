@@ -1,5 +1,8 @@
 package org.openmhealth.data.generator.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import org.openmhealth.schema.serializer.SerializationConstructor;
 
 /**
@@ -9,6 +12,8 @@ import org.openmhealth.schema.serializer.SerializationConstructor;
  * @Date 2021/7/7 9:32
  * @Version 1.0
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class SleepFragmentDTO extends MeasureDTO{
 
     /*
@@ -29,9 +34,8 @@ public class SleepFragmentDTO extends MeasureDTO{
         private Double sleepFragment;
         private Integer mField;
 
-        public Builder setSleepFragment(Double sleepFragment) {
+        public Builder (Double sleepFragment) {
             this.sleepFragment = sleepFragment;
-            return this;
         }
 
         public Builder setmField(Integer mField) {
@@ -49,6 +53,14 @@ public class SleepFragmentDTO extends MeasureDTO{
         super(builder);
         this.mField = builder.mField;
         this.sleepFragment = builder.sleepFragment;
+    }
+
+    public Double getSleepFragment() {
+        return sleepFragment;
+    }
+
+    public Integer getmField() {
+        return mField;
     }
 
     @Override

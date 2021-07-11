@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.temporal.ChronoField;
 
+import static org.openmhealth.data.generator.service.DistanceDataPointGenerator.DISTANCE_PER_MINUTE_KEY;
+
 /**
  * @program: test-gradle
  * @author: LJ
@@ -14,7 +16,6 @@ import java.time.temporal.ChronoField;
  **/
 @Component
 public class DistanceDTOTransfer extends AbstractTransfer<DistanceDTO> {
-    private static final String  DISTANCE = "miles-per-minute";
 
     @Override
     public String getName(){
@@ -23,8 +24,8 @@ public class DistanceDTOTransfer extends AbstractTransfer<DistanceDTO> {
 
     @Override
     public DistanceDTO newMeasureDTO(TimestampedValueGroup timestampedValueGroup) {
-        return new DistanceDTO.Builder().setTimestamp(timestampedValueGroup.getTimestamp().getLong(ChronoField.INSTANT_SECONDS))
-                    .setDistanceCount(timestampedValueGroup.getValue(DISTANCE))
+        return new DistanceDTO.Builder(timestampedValueGroup.getValue(DISTANCE_PER_MINUTE_KEY))
+                    .setTimestamp(timestampedValueGroup.getTimestamp())
                     .build();
     }
 }

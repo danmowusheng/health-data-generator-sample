@@ -1,5 +1,8 @@
 package org.openmhealth.data.generator.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import org.openmhealth.schema.serializer.SerializationConstructor;
 
 /**
@@ -9,6 +12,8 @@ import org.openmhealth.schema.serializer.SerializationConstructor;
  * @Date 2021/7/7 9:35
  * @Version 1.0
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class StressDTO extends MeasureDTO{
 
     /*
@@ -38,9 +43,8 @@ public class StressDTO extends MeasureDTO{
 
         private Integer measureType;
 
-        public Builder setStress(Integer stress) {
+        public Builder (Integer stress) {
             this.stress = stress;
-            return this;
         }
 
         public Builder setGrade(Integer grade) {
@@ -64,6 +68,18 @@ public class StressDTO extends MeasureDTO{
         this.grade = builder.grade;
         this.measureType = builder.measureType;
         this.stress = builder.stress;
+    }
+
+    public Integer getStress() {
+        return stress;
+    }
+
+    public Integer getGrade() {
+        return grade;
+    }
+
+    public Integer getMeasureType() {
+        return measureType;
     }
 
     @Override

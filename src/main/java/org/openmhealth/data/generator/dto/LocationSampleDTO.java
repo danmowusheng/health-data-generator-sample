@@ -1,5 +1,8 @@
 package org.openmhealth.data.generator.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import org.openmhealth.schema.serializer.SerializationConstructor;
 
 /**
@@ -9,6 +12,8 @@ import org.openmhealth.schema.serializer.SerializationConstructor;
  * @Date 2021/7/7 9:34
  * @Version 1.0
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class LocationSampleDTO extends MeasureDTO{
 
     /*
@@ -21,17 +26,14 @@ public class LocationSampleDTO extends MeasureDTO{
      */
     private Integer mField;
 
-    @SerializationConstructor
-    protected LocationSampleDTO(){
-    }
+
 
     public static class Builder extends MeasureDTO.Builder<LocationSampleDTO, LocationSampleDTO.Builder>{
         private Double locationSample;
         private Integer mField;
 
-        public Builder setLocationSample(Double locationSample) {
+        public Builder (Double locationSample) {
             this.locationSample = locationSample;
-            return this;
         }
 
         public Builder setmField(Integer mField) {
@@ -49,6 +51,18 @@ public class LocationSampleDTO extends MeasureDTO{
         super(builder);
         this.mField = builder.mField;
         this.locationSample = builder.locationSample;
+    }
+
+    @SerializationConstructor
+    protected LocationSampleDTO(){
+    }
+
+    public Double getLocationSample() {
+        return locationSample;
+    }
+
+    public Integer getmField() {
+        return mField;
     }
 
     @Override

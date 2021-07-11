@@ -23,8 +23,8 @@ public class StepCountDTOTransfer extends AbstractTransfer<StepsDTO> {
 
     @Override
     public StepsDTO newMeasureDTO(TimestampedValueGroup timestampedValueGroup) {
-        return new StepsDTO.Builder().setTimestamp(timestampedValueGroup.getTimestamp().getLong(ChronoField.INSTANT_SECONDS))
-                    .setStepsCount(timestampedValueGroup.getValue(STEPS_PER_MINUTE_KEY).intValue())
+        return new StepsDTO.Builder(timestampedValueGroup.getValue(STEPS_PER_MINUTE_KEY).intValue())
+                    .setTimestamp(timestampedValueGroup.getTimestamp())
                     .build();
     }
 }

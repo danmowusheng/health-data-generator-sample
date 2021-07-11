@@ -1,11 +1,15 @@
 package org.openmhealth.data.generator.transfer;
 
+import org.openmhealth.data.generator.constant.StressGrade;
 import org.openmhealth.data.generator.constant.StressMeasureType;
 import org.openmhealth.data.generator.domain.TimestampedValueGroup;
 import org.openmhealth.data.generator.dto.StressDTO;
 import org.springframework.stereotype.Component;
 
 import java.time.temporal.ChronoField;
+
+import static org.openmhealth.data.generator.service.StressDataPointGenerator.STRESS_GRADE_KEY;
+import static org.openmhealth.data.generator.service.StressDataPointGenerator.STRESS_KEY;
 
 /**
  * @program: test-gradle
@@ -15,8 +19,6 @@ import java.time.temporal.ChronoField;
  **/
 @Component
 public class StressDTOTransfer extends AbstractTransfer<StressDTO> {
-    private static final String STRESS = "stress";
-    private static final String GRADE = "grade";
 
     @Override
     public String getName(){
@@ -25,10 +27,9 @@ public class StressDTOTransfer extends AbstractTransfer<StressDTO> {
 
     @Override
     public StressDTO newMeasureDTO(TimestampedValueGroup timestampedValueGroup) {
-        return new StressDTO.Builder().setTimestamp(timestampedValueGroup.getTimestamp().getLong(ChronoField.INSTANT_SECONDS))
-                    .setGrade(timestampedValueGroup.getValue(GRADE).intValue())
-                    .setMeasureType(1)
-                    .setStress(timestampedValueGroup.getValue(STRESS).intValue())
+        return new StressDTO.Builder(timestampedValueGroup.getValue(STRESS_KEY).intValue()).setTimestamp(timestampedValueGroup.getTimestamp())
+                    .setGrade(StressGrade.NORMAL.ordinal())
+                    .setMeasureType(StressMeasureType.PASSIVE.ordinal())
                     .build();
     }
 }

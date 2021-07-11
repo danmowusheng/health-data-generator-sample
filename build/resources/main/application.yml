@@ -169,28 +169,82 @@ data:
 #        maximum-value: 38
 #        standard-deviation: 0.3
 #
-#    - generator: sleep-duration
-#      trends:
-#        ? duration-in-hours
-#        : start-value: 8
-#          end-value: 8
-#          minimum-value: 4
-#          maximum-value: 12
-#          standard-deviation: 0.75
+    - generator: sleep-duration
+      trends:
+        ? duration-in-hours
+        : start-value: 8
+          end-value: 8
+          minimum-value: 4
+          maximum-value: 12
+          standard-deviation: 0.75
+
 #
 #   只单纯在yml文件中定义generator无法在初始化的时候生成，需要使用@Component注解定义到Spring容器中
-#    - generator: oxygen-saturation
-#      trends:
-#        ? percentage
-#        : start-value: 95
-#          end-value: 95
-#          minimum-value: 80
-#          maximum-value: 98
-#          standard-deviation: 2
-#        ? L-per-minute
-#        : start-value: 0
-#          end-value: 0
-#          minimum-value: 0
-#          maximum-value: 0
-#          standard-deviation: 0
+    - generator: oxygen-saturation
+      trends:
+        ? percentage
+        : start-value: 95
+          end-value: 95
+          minimum-value: 80
+          maximum-value: 98
+          standard-deviation: 2
+        ? L-per-minute
+        : start-value: 0
+          end-value: 0
+          minimum-value: 0
+          maximum-value: 0
+          standard-deviation: 0
 
+    - generator: calorie-count
+      trends:
+        ? calorie-burned
+        : start-value: 10
+          end-value: 50
+          minimum-value: 0
+          maximum-value: 200
+          standard-deviation: 5
+# 与step-count类似
+    - generator: distance
+      trends:
+        ? duration-in-seconds
+        : start-value: 300
+          end-value: 150
+          minimum-value: 10
+          maximum-value: 1800
+          standard-deviation: 50
+        ? miles-per-minute
+        : start-value: 10
+          end-value: 15
+          minimum-value: 0
+          maximum-value: 1000
+          standard-deviation: 3
+
+    - generator: geo-position
+      trends:
+        ? latitude
+        : start-value: 50
+          end-value: 50
+          minimum-value: 0
+          maximum-value: 180
+          standard-deviation: 2
+        ? longitude
+        : start-value: 50
+          end-value: 50
+          minimum-value: 0
+          maximum-value: 180
+          standard-deviation: 2
+        ? precision
+        : start-value: 50
+          end-value: 50
+          minimum-value: 1
+          maximum-value: 500
+          standard-deviation: 0
+
+    - generator: stress-detail
+      trends:
+        ? stress-value
+        : start-value: 10
+          end-value: 20
+          minimum-value: 1
+          maximum-value: 99
+          standard-deviation: 3

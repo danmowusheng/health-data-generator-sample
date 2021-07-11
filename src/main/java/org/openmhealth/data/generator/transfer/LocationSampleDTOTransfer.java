@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.temporal.ChronoField;
 
+import static org.openmhealth.data.generator.service.LocationDataPointGenerator.LATITUDE_KEY;
+
 /**
  * @program: test-gradle
  * @author: LJ
@@ -14,7 +16,6 @@ import java.time.temporal.ChronoField;
  **/
 @Component
 public class LocationSampleDTOTransfer extends AbstractTransfer<LocationSampleDTO> {
-    private static final String LOCATION = "a-location";
     private static final String M_FIELD = "latitude";
 
     @Override
@@ -24,8 +25,8 @@ public class LocationSampleDTOTransfer extends AbstractTransfer<LocationSampleDT
 
     @Override
     public LocationSampleDTO newMeasureDTO(TimestampedValueGroup timestampedValueGroup) {
-        return new LocationSampleDTO.Builder().setTimestamp(timestampedValueGroup.getTimestamp().getLong(ChronoField.INSTANT_SECONDS))
-                    .setLocationSample(timestampedValueGroup.getValue(LOCATION))
+        return new LocationSampleDTO.Builder(timestampedValueGroup.getValue(LATITUDE_KEY))
+                    .setTimestamp(timestampedValueGroup.getTimestamp())
                     .setmField((timestampedValueGroup.getValue(M_FIELD)).intValue())
                     .build();
     }

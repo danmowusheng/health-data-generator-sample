@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.temporal.ChronoField;
 
+import static org.openmhealth.data.generator.service.OxygenSaturationDataPointGenerator.SATURATION_KEY;
+
 /**
  * @program: test-gradle
  * @author: LJ
@@ -14,11 +16,10 @@ import java.time.temporal.ChronoField;
  **/
 @Component
 public class Spo2DTOTransfer extends AbstractTransfer<Spo2DTO> {
-    private static final String  SPO2 = "percentage";
 
     @Override
     public String getName(){
-        return "spo2-percentage";
+        return "oxygen-saturation";
     }
 
     public enum SupplementalOxygenAdministrationMode{
@@ -35,10 +36,10 @@ public class Spo2DTOTransfer extends AbstractTransfer<Spo2DTO> {
 
     @Override
     public Spo2DTO newMeasureDTO(TimestampedValueGroup timestampedValueGroup) {
-        return new Spo2DTO.Builder().setTimestamp(timestampedValueGroup.getTimestamp().getLong(ChronoField.INSTANT_SECONDS))
+        return new Spo2DTO.Builder(timestampedValueGroup.getValue(SATURATION_KEY))
+                        .setTimestamp(timestampedValueGroup.getTimestamp())
                         .setmField(MeasurementSystem.PERIPHERAL_CAPILLARY.name())
                         .setOxygenTherapy(false)
-                        .setSpo2(timestampedValueGroup.getValue(SPO2))
                         .setSpo2Measurement(MeasurementMethod.PULSE_OXIMETRY.name())
                         .build();
     }

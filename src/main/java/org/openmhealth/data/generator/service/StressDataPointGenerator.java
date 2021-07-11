@@ -2,11 +2,15 @@ package org.openmhealth.data.generator.service;
 
 import com.google.common.collect.Sets;
 import org.openmhealth.data.generator.additionalMeasure.Stress;
+import org.openmhealth.data.generator.constant.StressGrade;
 import org.openmhealth.data.generator.constant.StressMeasureType;
 import org.openmhealth.data.generator.domain.TimestampedValueGroup;
 import org.springframework.stereotype.Component;
 
+
 import java.util.Set;
+
+import static java.util.Collections.singleton;
 
 /**
  * @program: test-gradle
@@ -23,7 +27,7 @@ public class StressDataPointGenerator extends AbstractDataPointGeneratorImpl<Str
     public Stress newMeasure(TimestampedValueGroup valueGroup) {
         return new Stress.Builder().setEffectiveTimeFrame(valueGroup.getTimestamp())
                     .setStress(valueGroup.getValue(STRESS_KEY).intValue())
-                    .setGrade(valueGroup.getValue(STRESS_GRADE_KEY).intValue())
+                    .setGrade(StressGrade.MEDIUM.ordinal())
                     .setStressMeasureType(StressMeasureType.PASSIVE)
                     .build();
     }
@@ -35,7 +39,7 @@ public class StressDataPointGenerator extends AbstractDataPointGeneratorImpl<Str
 
     @Override
     public Set<String> getRequiredValueGroupKeys() {
-        return Sets.newHashSet(STRESS_KEY, STRESS_GRADE_KEY);
+        return singleton(STRESS_KEY);
     }
 
     @Override

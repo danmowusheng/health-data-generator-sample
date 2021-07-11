@@ -1,5 +1,8 @@
 package org.openmhealth.data.generator.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import org.openmhealth.data.generator.constant.BodyWeight;
 import org.openmhealth.schema.serializer.SerializationConstructor;
 
@@ -12,6 +15,8 @@ import java.sql.BatchUpdateException;
  * @Date 2021/7/7 9:34
  * @Version 1.0
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)     //蛇形大小写
 public class BodyWeightDTO extends MeasureDTO{
 
     /*
@@ -27,13 +32,13 @@ public class BodyWeightDTO extends MeasureDTO{
     @SerializationConstructor
     protected BodyWeightDTO(){
     }
+
     public static class Builder extends MeasureDTO.Builder<BodyWeightDTO, BodyWeightDTO.Builder>{
         private Double bodyWeight;
         private BodyWeight mField;
 
-        public Builder setBodyWeight(Double bodyWeight) {
+        public Builder (Double bodyWeight) {
             this.bodyWeight = bodyWeight;
-            return this;
         }
 
         public Builder setmField(BodyWeight mField) {
@@ -51,6 +56,14 @@ public class BodyWeightDTO extends MeasureDTO{
         super(builder);
         this.bodyWeight = builder.bodyWeight;
         this.mField = builder.mField;
+    }
+
+    public Double getBodyWeight() {
+        return bodyWeight;
+    }
+
+    public BodyWeight getmField() {
+        return mField;
     }
 
     @Override

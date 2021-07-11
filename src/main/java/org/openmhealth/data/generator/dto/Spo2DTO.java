@@ -1,5 +1,8 @@
 package org.openmhealth.data.generator.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import org.openmhealth.schema.serializer.SerializationConstructor;
 
 /**
@@ -9,6 +12,8 @@ import org.openmhealth.schema.serializer.SerializationConstructor;
  * @Date 2021/7/7 9:34
  * @Version 1.0
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class Spo2DTO extends MeasureDTO{
 
     /*
@@ -31,10 +36,10 @@ public class Spo2DTO extends MeasureDTO{
     spo2测量
      */
     private String spo2Measurement;
-
     @SerializationConstructor
     protected Spo2DTO() {
     }
+
 
     public static class Builder extends MeasureDTO.Builder<Spo2DTO, Spo2DTO.Builder>{
 
@@ -43,9 +48,8 @@ public class Spo2DTO extends MeasureDTO{
         private Boolean oxygenTherapy;
         private String spo2Measurement;
 
-        public Builder setSpo2(Double spo2) {
+        public Builder (Double spo2) {
             this.spo2 = spo2;
-            return this;
         }
 
         public Builder setmField(String mField) {
@@ -75,6 +79,22 @@ public class Spo2DTO extends MeasureDTO{
         this.oxygenTherapy = builder.oxygenTherapy;
         this.spo2 = builder.spo2;
         this.spo2Measurement = builder.spo2Measurement;
+    }
+
+    public Double getSpo2() {
+        return spo2;
+    }
+
+    public String getmField() {
+        return mField;
+    }
+
+    public Boolean getOxygenTherapy() {
+        return oxygenTherapy;
+    }
+
+    public String getSpo2Measurement() {
+        return spo2Measurement;
     }
 
     @Override

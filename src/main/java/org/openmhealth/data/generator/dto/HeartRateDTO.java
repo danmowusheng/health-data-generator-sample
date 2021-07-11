@@ -1,5 +1,8 @@
 package org.openmhealth.data.generator.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import org.openmhealth.data.generator.constant.HeartRate;
 import org.openmhealth.schema.serializer.SerializationConstructor;
 
@@ -10,6 +13,8 @@ import org.openmhealth.schema.serializer.SerializationConstructor;
  * @Date 2021/7/7 9:33
  * @Version 1.0
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class HeartRateDTO extends MeasureDTO{
 
     /*
@@ -31,9 +36,8 @@ public class HeartRateDTO extends MeasureDTO{
         private Integer heartRate;
         private HeartRate mField;
 
-        public Builder setHeartRate(Integer heartRate) {
+        public Builder (Integer heartRate) {
             this.heartRate = heartRate;
-            return this;
         }
 
         public Builder setmField(HeartRate mField) {
@@ -51,6 +55,14 @@ public class HeartRateDTO extends MeasureDTO{
         super(builder);
         this.mField = builder.mField;
         this.heartRate = builder.heartRate;
+    }
+
+    public Integer getHeartRate() {
+        return heartRate;
+    }
+
+    public HeartRate getmField() {
+        return mField;
     }
 
     @Override

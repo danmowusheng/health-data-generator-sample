@@ -1,10 +1,13 @@
 package org.openmhealth.data.generator.transfer;
 
+import org.openmhealth.data.generator.constant.SleepFragment;
 import org.openmhealth.data.generator.domain.TimestampedValueGroup;
 import org.openmhealth.data.generator.dto.SleepFragmentDTO;
 import org.springframework.stereotype.Component;
 
 import java.time.temporal.ChronoField;
+
+import static org.openmhealth.data.generator.service.SleepDurationDataPointGenerator.DURATION_KEY;
 
 /**
  * @program: test-gradle
@@ -14,8 +17,7 @@ import java.time.temporal.ChronoField;
  **/
 @Component
 public class SleepFragmentDTOTransfer extends AbstractTransfer<SleepFragmentDTO> {
-    private static final String  SLEEP_FRAGMENT = "sleep-hours";
-    private static final String  M_FIELD = "sleep-status";
+    private static final SleepFragment M_FIELD = SleepFragment.DREAM_SLEEP;
 
     @Override
     public String getName(){
@@ -24,9 +26,9 @@ public class SleepFragmentDTOTransfer extends AbstractTransfer<SleepFragmentDTO>
 
     @Override
     public SleepFragmentDTO newMeasureDTO(TimestampedValueGroup timestampedValueGroup) {
-        return new SleepFragmentDTO.Builder().setTimestamp(timestampedValueGroup.getTimestamp().getLong(ChronoField.INSTANT_SECONDS))
-                    .setmField(timestampedValueGroup.getValue(M_FIELD).intValue())
-                    .setSleepFragment(timestampedValueGroup.getValue(SLEEP_FRAGMENT))
+        return new SleepFragmentDTO.Builder(timestampedValueGroup.getValue(DURATION_KEY))
+                    .setTimestamp(timestampedValueGroup.getTimestamp())
+                    .setmField(M_FIELD.ordinal())
                     .build();
     }
 }

@@ -1,5 +1,8 @@
 package org.openmhealth.data.generator.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import org.openmhealth.schema.serializer.SerializationConstructor;
 
 /**
@@ -9,6 +12,8 @@ import org.openmhealth.schema.serializer.SerializationConstructor;
  * @Date 2021/7/7 9:30
  * @Version 1.0
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class DistanceDTO extends MeasureDTO{
 
     /*
@@ -24,9 +29,8 @@ public class DistanceDTO extends MeasureDTO{
 
         private Double distanceCount;
 
-        public Builder setDistanceCount(Double caloriesCount) {
+        public Builder (Double caloriesCount) {
             this.distanceCount = caloriesCount;
-            return this;
         }
 
 
@@ -39,6 +43,10 @@ public class DistanceDTO extends MeasureDTO{
     private DistanceDTO(Builder builder) {
         super(builder);
         this.distanceCount = builder.distanceCount;
+    }
+
+    public Double getDistanceCount() {
+        return distanceCount;
     }
 
     @Override

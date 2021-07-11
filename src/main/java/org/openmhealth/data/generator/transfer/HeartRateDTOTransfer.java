@@ -26,9 +26,8 @@ public class HeartRateDTOTransfer extends AbstractTransfer<HeartRateDTO> {
 
     @Override
     public HeartRateDTO newMeasureDTO(TimestampedValueGroup valueGroup) {
-        return new HeartRateDTO.Builder()
-                .setTimestamp(valueGroup.getTimestamp().getLong(ChronoField.INSTANT_SECONDS))
-                .setHeartRate((valueGroup.getValue(RATE_KEY)).intValue())
+        return new HeartRateDTO.Builder((valueGroup.getValue(RATE_KEY)).intValue())
+                .setTimestamp(valueGroup.getTimestamp())
                 .setmField(type)
                 .build();
     }

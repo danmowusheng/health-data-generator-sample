@@ -5,7 +5,6 @@ import org.openmhealth.data.generator.domain.TimestampedValueGroup;
 import org.openmhealth.data.generator.dto.BodyWeightDTO;
 import org.springframework.stereotype.Component;
 
-import java.time.temporal.ChronoField;
 
 /**
  * @program: test-gradle
@@ -26,10 +25,9 @@ public class BodyWeightDTOtransfer extends AbstractTransfer<BodyWeightDTO> {
 
     @Override
     public BodyWeightDTO newMeasureDTO(TimestampedValueGroup timestampedValueGroup) {
-        return new BodyWeightDTO.Builder().setBodyWeight(timestampedValueGroup.getValue(WEIGHT_KEY))
-                .setTimestamp(timestampedValueGroup.getTimestamp().getLong(ChronoField.INSTANT_SECONDS))
+        return new BodyWeightDTO.Builder(timestampedValueGroup.getValue(WEIGHT_KEY))
+                .setTimestamp(timestampedValueGroup.getTimestamp())
                 .setmField(bodyWeight)
-                .setBodyWeight(timestampedValueGroup.getValue(WEIGHT_KEY))
                 .build();
     }
 

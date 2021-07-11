@@ -4,7 +4,7 @@ import org.openmhealth.data.generator.domain.TimestampedValueGroup;
 import org.openmhealth.data.generator.dto.CaloriesDTO;
 import org.springframework.stereotype.Component;
 
-import java.time.temporal.ChronoField;
+
 
 /**
  * @program: test-gradle
@@ -23,8 +23,8 @@ public class CaloriesDTOTransfer extends AbstractTransfer<CaloriesDTO> {
 
     @Override
     public CaloriesDTO newMeasureDTO(TimestampedValueGroup timestampedValueGroup) {
-        return new CaloriesDTO.Builder().setTimestamp(timestampedValueGroup.getTimestamp().getLong(ChronoField.INSTANT_SECONDS))
-                    .setCaloriesCount(timestampedValueGroup.getValue(CALORIE_KEY))
+        return new CaloriesDTO.Builder(timestampedValueGroup.getValue(CALORIE_KEY))
+                    .setTimestamp(timestampedValueGroup.getTimestamp())
                     .build();
     }
 }
