@@ -1,14 +1,9 @@
 package org.openmhealth.data.generator.domain;
 
-import org.openmhealth.data.generator.constant.HeartRate;
 import org.openmhealth.data.generator.dto.*;
-import org.openmhealth.data.generator.service.ECGRecordDataPointGenerator;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @program: test-gradle
@@ -20,168 +15,171 @@ public class JsonObject {
     /**
      * 用户名
      */
-    String userID;
+    String userId;
     /**
      * 健康数据
      */
-    List<BodyWeightDTO> bodyWeightDTOS;
-    List<CaloriesDTO> caloriesDTOS;
-    List<DistanceDTO> distanceDTOS;
-    List<EcgDetailDTO> ecgDetailDTOS;
-    List<EcgRecordDTO> ecgRecordDTOS;
-    List<HeartRateDTO> heartRateDTOS;
-    List<LocationSampleDTO> locationSampleDTOS;
-    List<SleepFragmentDTO> sleepFragmentDTOS;
-    List<Spo2DTO> spo2DTOS;
-    List<StepsDTO> stepsDTOS;
-    List<StressDTO> stressDTOS;
+    List<BodyWeightDTO> bodyWeight;
+    List<CaloriesDTO> calories;
+    List<DistanceDTO> distance;
+    List<EcgDetailDTO> ecgDetail;
+    List<EcgRecordDTO> ecgRecord;
+    List<HeartRateDTO> heartRate;
+    List<LocationSampleDTO> locationSample;
+    List<SleepFragmentDTO> sleepFragment;
+    List<Spo2DTO> spo2;
+    List<StepsDTO> steps;
+    List<StressDTO> stress;
 
 
-    public JsonObject(String userID) {
-        this.userID = userID;
+    public JsonObject(String userId) {
+        this.userId = userId;
 
-        bodyWeightDTOS = new ArrayList<>();
-        caloriesDTOS = new ArrayList<>();
-        distanceDTOS = new ArrayList<>();
-        ecgDetailDTOS = new ArrayList<>();
-        ecgRecordDTOS = new ArrayList<>();
-        heartRateDTOS = new ArrayList<>();
-        locationSampleDTOS = new ArrayList<>();
-        sleepFragmentDTOS = new ArrayList<>();
-        spo2DTOS = new ArrayList<>();
-        stepsDTOS = new ArrayList<>();
-        stressDTOS = new ArrayList<>();
+        bodyWeight = new ArrayList<>();
+        calories = new ArrayList<>();
+        distance = new ArrayList<>();
+        ecgDetail = new ArrayList<>();
+        ecgRecord = new ArrayList<>();
+        heartRate = new ArrayList<>();
+        locationSample = new ArrayList<>();
+        sleepFragment = new ArrayList<>();
+        spo2 = new ArrayList<>();
+        steps = new ArrayList<>();
+        stress = new ArrayList<>();
     }
 
     public void setList(String name, List<? extends MeasureDTO> DTOlist){
         switch (name){
             case "body-weight":
-                this.bodyWeightDTOS = (List<BodyWeightDTO>) DTOlist;
+                this.bodyWeight = (List<BodyWeightDTO>) DTOlist;
                 break;
             case "calorie-count":
-                this.caloriesDTOS = (List<CaloriesDTO>) DTOlist;
+                this.calories = (List<CaloriesDTO>) DTOlist;
                 break;
             case "distance":
-                this.distanceDTOS = (List<DistanceDTO>) DTOlist;
+                this.distance = (List<DistanceDTO>) DTOlist;
                 break;
             case "ECG-detail":
-                this.ecgDetailDTOS = (List<EcgDetailDTO>) DTOlist;
+                this.ecgDetail = (List<EcgDetailDTO>) DTOlist;
                 break;
             case "ECG-record":
-                this.ecgRecordDTOS = (List<EcgRecordDTO>) DTOlist;
+                this.ecgRecord = (List<EcgRecordDTO>) DTOlist;
                 break;
             case "heart-rate":
-                this.heartRateDTOS = (List<HeartRateDTO>) DTOlist;
+                this.heartRate = (List<HeartRateDTO>) DTOlist;
                 break;
             case "geo-position":
-                this.locationSampleDTOS = (List<LocationSampleDTO>) DTOlist;
+                this.locationSample = (List<LocationSampleDTO>) DTOlist;
                 break;
             case "sleep-duration":
-                this.sleepFragmentDTOS = (List<SleepFragmentDTO>) DTOlist;
+                this.sleepFragment = (List<SleepFragmentDTO>) DTOlist;
                 break;
             case "step-count":
-                this.stepsDTOS = (List<StepsDTO>) DTOlist;
+                this.steps = (List<StepsDTO>) DTOlist;
                 break;
             case "stress-detail":
-                this.stressDTOS = (List<StressDTO>) DTOlist;
+                this.stress = (List<StressDTO>) DTOlist;
+                break;
+            case "oxygen-saturation":
+                this.spo2 = (List<Spo2DTO>) DTOlist;
                 break;
         }
     }
 
-    public String getUserID() {
-        return userID;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUserID(String userID) {
-        this.userID = userID;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public List<BodyWeightDTO> getBodyWeightDTOS() {
-        return bodyWeightDTOS;
+    public List<BodyWeightDTO> getBodyWeight() {
+        return bodyWeight;
     }
 
-    public void setBodyWeightDTOS(List<BodyWeightDTO> bodyWeightDTOS) {
-        this.bodyWeightDTOS = bodyWeightDTOS;
+    public void setBodyWeight(List<BodyWeightDTO> bodyWeight) {
+        this.bodyWeight = bodyWeight;
     }
 
-    public List<CaloriesDTO> getCaloriesDTOS() {
-        return caloriesDTOS;
+    public List<CaloriesDTO> getCalories() {
+        return calories;
     }
 
-    public void setCaloriesDTOS(List<CaloriesDTO> caloriesDTOS) {
-        this.caloriesDTOS = caloriesDTOS;
+    public void setCalories(List<CaloriesDTO> calories) {
+        this.calories = calories;
     }
 
-    public List<DistanceDTO> getDistanceDTOS() {
-        return distanceDTOS;
+    public List<DistanceDTO> getDistance() {
+        return distance;
     }
 
-    public void setDistanceDTOS(List<DistanceDTO> distanceDTOS) {
-        this.distanceDTOS = distanceDTOS;
+    public void setDistance(List<DistanceDTO> distance) {
+        this.distance = distance;
     }
 
-    public List<EcgDetailDTO> getEcgDetailDTOS() {
-        return ecgDetailDTOS;
+    public List<EcgDetailDTO> getEcgDetail() {
+        return ecgDetail;
     }
 
-    public void setEcgDetailDTOS(List<EcgDetailDTO> ecgDetailDTOS) {
-        this.ecgDetailDTOS = ecgDetailDTOS;
+    public void setEcgDetail(List<EcgDetailDTO> ecgDetail) {
+        this.ecgDetail = ecgDetail;
     }
 
-    public List<EcgRecordDTO> getEcgRecordDTOS() {
-        return ecgRecordDTOS;
+    public List<EcgRecordDTO> getEcgRecord() {
+        return ecgRecord;
     }
 
-    public void setEcgRecordDTOS(List<EcgRecordDTO> ecgRecordDTOS) {
-        this.ecgRecordDTOS = ecgRecordDTOS;
+    public void setEcgRecord(List<EcgRecordDTO> ecgRecord) {
+        this.ecgRecord = ecgRecord;
     }
 
-    public List<HeartRateDTO> getHeartRateDTOS() {
-        return heartRateDTOS;
+    public List<HeartRateDTO> getHeartRate() {
+        return heartRate;
     }
 
-    public void setHeartRateDTOS(List<HeartRateDTO> heartRateDTOS) {
-        this.heartRateDTOS = heartRateDTOS;
+    public void setHeartRate(List<HeartRateDTO> heartRate) {
+        this.heartRate = heartRate;
     }
 
-    public List<LocationSampleDTO> getLocationSampleDTOS() {
-        return locationSampleDTOS;
+    public List<LocationSampleDTO> getLocationSample() {
+        return locationSample;
     }
 
-    public void setLocationSampleDTOS(List<LocationSampleDTO> locationSampleDTOS) {
-        this.locationSampleDTOS = locationSampleDTOS;
+    public void setLocationSample(List<LocationSampleDTO> locationSample) {
+        this.locationSample = locationSample;
     }
 
-    public List<SleepFragmentDTO> getSleepFragmentDTOS() {
-        return sleepFragmentDTOS;
+    public List<SleepFragmentDTO> getSleepFragment() {
+        return sleepFragment;
     }
 
-    public void setSleepFragmentDTOS(List<SleepFragmentDTO> sleepFragmentDTOS) {
-        this.sleepFragmentDTOS = sleepFragmentDTOS;
+    public void setSleepFragment(List<SleepFragmentDTO> sleepFragment) {
+        this.sleepFragment = sleepFragment;
     }
 
-    public List<Spo2DTO> getSpo2DTOS() {
-        return spo2DTOS;
+    public List<Spo2DTO> getSpo2() {
+        return spo2;
     }
 
-    public void setSpo2DTOS(List<Spo2DTO> spo2DTOS) {
-        this.spo2DTOS = spo2DTOS;
+    public void setSpo2(List<Spo2DTO> spo2) {
+        this.spo2 = spo2;
     }
 
-    public List<StepsDTO> getStepsDTOS() {
-        return stepsDTOS;
+    public List<StepsDTO> getSteps() {
+        return steps;
     }
 
-    public void setStepsDTOS(List<StepsDTO> stepsDTOS) {
-        this.stepsDTOS = stepsDTOS;
+    public void setSteps(List<StepsDTO> steps) {
+        this.steps = steps;
     }
 
-    public List<StressDTO> getStressDTOS() {
-        return stressDTOS;
+    public List<StressDTO> getStress() {
+        return stress;
     }
 
-    public void setStressDTOS(List<StressDTO> stressDTOS) {
-        this.stressDTOS = stressDTOS;
+    public void setStress(List<StressDTO> stress) {
+        this.stress = stress;
     }
 
     /**

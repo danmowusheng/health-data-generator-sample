@@ -28,7 +28,7 @@ public class HeartRateDTOTransfer extends AbstractTransfer<HeartRateDTO> {
     public HeartRateDTO newMeasureDTO(TimestampedValueGroup valueGroup) {
         return new HeartRateDTO.Builder((valueGroup.getValue(RATE_KEY)).intValue())
                 .setTimestamp(valueGroup.getTimestamp())
-                .setmField(type)
+                .setmField(1)
                 .build();
     }
 }

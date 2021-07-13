@@ -16,7 +16,7 @@ import java.sql.BatchUpdateException;
  * @Version 1.0
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)     //蛇形大小写
+//@JsonNaming(PropertyNamingStrategy.LOWER_CAMEL_CASE)
 public class BodyWeightDTO extends MeasureDTO{
 
     /*
@@ -27,7 +27,7 @@ public class BodyWeightDTO extends MeasureDTO{
     /*
     必需label,体重的类型
      */
-    private BodyWeight mField;
+    private Integer mField;
 
     @SerializationConstructor
     protected BodyWeightDTO(){
@@ -35,13 +35,13 @@ public class BodyWeightDTO extends MeasureDTO{
 
     public static class Builder extends MeasureDTO.Builder<BodyWeightDTO, BodyWeightDTO.Builder>{
         private Double bodyWeight;
-        private BodyWeight mField;
+        private Integer mField;
 
         public Builder (Double bodyWeight) {
             this.bodyWeight = bodyWeight;
         }
 
-        public Builder setmField(BodyWeight mField) {
+        public Builder setmField(Integer mField) {
             this.mField = mField;
             return this;
         }
@@ -62,7 +62,7 @@ public class BodyWeightDTO extends MeasureDTO{
         return bodyWeight;
     }
 
-    public BodyWeight getmField() {
+    public Integer getmField() {
         return mField;
     }
 

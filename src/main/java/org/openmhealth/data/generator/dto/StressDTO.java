@@ -13,7 +13,7 @@ import org.openmhealth.schema.serializer.SerializationConstructor;
  * @Version 1.0
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+//@JsonNaming(PropertyNamingStrategy.UpperCamelCaseStrategy.class)
 public class StressDTO extends MeasureDTO{
 
     /*

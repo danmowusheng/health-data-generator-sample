@@ -1,8 +1,6 @@
 package org.openmhealth.data.generator.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import org.openmhealth.schema.serializer.SerializationConstructor;
 
 /**
@@ -13,13 +11,13 @@ import org.openmhealth.schema.serializer.SerializationConstructor;
  * @Version 1.0
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+//@JsonNaming(PropertyNamingStrategy.UpperCamelCaseStrategy.class)
 public class StepsDTO extends MeasureDTO{
 
     /*
     步数
      */
-    private Integer stepsCount;
+    private Integer steps;
 
     @SerializationConstructor
     protected StepsDTO() {
@@ -27,10 +25,10 @@ public class StepsDTO extends MeasureDTO{
 
     public static class Builder extends MeasureDTO.Builder<StepsDTO, StepsDTO.Builder>{
 
-        private Integer stepsCount;
+        private Integer steps;
 
-        public Builder (Integer stepsCount) {
-            this.stepsCount = stepsCount;
+        public Builder (Integer steps) {
+            this.steps = steps;
         }
 
         @Override
@@ -39,19 +37,19 @@ public class StepsDTO extends MeasureDTO{
         }
     }
 
-    public Integer getStepsCount() {
-        return stepsCount;
+    public Integer getSteps() {
+        return steps;
     }
 
     private StepsDTO(Builder builder) {
         super(builder);
-        this.stepsCount = builder.stepsCount;
+        this.steps = builder.steps;
     }
 
     @Override
     public String toString() {
         return "StepsDTO{" +
-                "stepsCount=" + stepsCount +
+                "stepsCount=" + steps +
                 '}';
     }
 }

@@ -38,9 +38,9 @@ public class Spo2DTOTransfer extends AbstractTransfer<Spo2DTO> {
     public Spo2DTO newMeasureDTO(TimestampedValueGroup timestampedValueGroup) {
         return new Spo2DTO.Builder(timestampedValueGroup.getValue(SATURATION_KEY))
                         .setTimestamp(timestampedValueGroup.getTimestamp())
-                        .setmField(MeasurementSystem.PERIPHERAL_CAPILLARY.name())
+                        .setmField(1)
                         .setOxygenTherapy(false)
-                        .setSpo2Measurement(MeasurementMethod.PULSE_OXIMETRY.name())
+                        .setSpo2Measurement(1)
                         .build();
     }
 }

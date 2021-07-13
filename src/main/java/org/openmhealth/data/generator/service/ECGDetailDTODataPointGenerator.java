@@ -1,9 +1,9 @@
 package org.openmhealth.data.generator.service;
 
 
+import org.openmhealth.data.generator.additionalMeasure.ECGDetail;
 import org.openmhealth.data.generator.domain.TimestampedValueGroup;
-import org.openmhealth.schema.domain.omh.HeartRate;
-import org.openmhealth.schema.domain.omh.Measure;
+import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.Set;
@@ -14,11 +14,14 @@ import java.util.Set;
  * @create: 2021-07-11 10:21
  * @description：
  **/
-public class ECGDetailDTODataPointGenerator extends AbstractDataPointGeneratorImpl<HeartRate>{
+@Component
+public class ECGDetailDTODataPointGenerator extends AbstractDataPointGeneratorImpl<ECGDetail>{
     public static final String  VOLTAGE_KEY = "voltage-value";
     @Override
-    public HeartRate newMeasure(TimestampedValueGroup valueGroup) {
-        return null;
+    public ECGDetail newMeasure(TimestampedValueGroup valueGroup) {
+        return new ECGDetail.Builder(valueGroup.getValue(VOLTAGE_KEY))
+                    .setEffectiveTimeFrame(valueGroup.getTimestamp())
+                    .build();
     }
 
     @Override

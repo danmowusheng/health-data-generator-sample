@@ -4,12 +4,20 @@ package org.openmhealth.data.generator.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Sets;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.openmhealth.data.generator.Application;
 import org.openmhealth.data.generator.configuration.DataGenerationSettings;
 import org.openmhealth.data.generator.converter.OffsetDateTime2String;
@@ -63,14 +71,17 @@ public class DataGeneratorController {
     @Autowired
     private FileSystemDataPointWritingServiceImpl dataPointWritingService;
 
+    @Autowired
+    private DataWrite2FileService dataWrite2FileService;
+
     private Map<String, DataPointGenerator<?>> dataPointGeneratorMap = new HashMap<>();
 
     private Map<String, Transfer<?>> dataTransferMap = new HashMap<>();
 
     private OffsetDateTime2String offsetDateTime2String = new OffsetDateTime2String();
+
     private List<DataGenerationSettings> dataGenerationSettingsList = new ArrayList<>();
 
-    private List<JsonObject> jsonObjects = new ArrayList<>();
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -85,7 +96,6 @@ public class DataGeneratorController {
             size--;
             String userID = getId(size);
             DataGenerationSettings newSetting = new DataGenerationSettings();
-            //newSetting.setUserID(userID);
             newSetting.setUserID(userID);
             newSetting.setStartDateTime(dataGenerationSettings.getStartDateTime());
             newSetting.setEndDateTime(dataGenerationSettings.getEndDateTime());
@@ -93,7 +103,7 @@ public class DataGeneratorController {
             newSetting.setMeasureGenerationRequests(dataGenerationSettings.getMeasureGenerationRequests());
             dataGenerationSettingsList.add(newSetting);
             System.out.println(userID+"的数据产生器设置初始化成功!"+" 开始时间:"+newSetting.getStartDateTime());
-            System.out.println(newSetting.toString());
+            //System.out.println(newSetting.toString());
         }
         System.out.println("initialization done");
     }
@@ -153,11 +163,16 @@ public class DataGeneratorController {
         }
 
     }
-
+    /**
+    * @Description: 为一种配置生成对应的健康数据
+    * @Param: DataSettings
+    * @author: LJ
+    * @Date: 2021/7/12
+    **/
     public void generateDataForSettings(DataGenerationSettings dataGenerationSetting) throws IOException {
         OffsetDateTime startTime  = dataGenerationSetting.getStartDateTime();
         System.out.println("userId:"+dataGenerationSetting.getUserID());
-
+        //创建一个用于上传的实体类类型
         JsonObject jsonObject = new JsonObject(dataGenerationSetting.getUserID());
 
         setMeasureGenerationRequestDefaults(dataGenerationSetting);
@@ -171,18 +186,26 @@ public class DataGeneratorController {
         if(!parent.exists()){
             parent.mkdir();
         }
-
-        String fileName = root + offsetDateTime2String.convert(startTime) + ".json";
+        //文件操作
+        String fileName = root + offsetDateTime2String.convert(startTime)+"/"; //+ ".json"
+        File leaf = new File(fileName);
+        if(!leaf.exists()){
+            leaf.mkdir();
+        }
         System.out.println("fileName is: "+ fileName);
         //dataPointWritingService.clearFile();
-        dataPointWritingService.setFilename(fileName);
-        dataPointWritingService.setAppend(true);
-        System.out.println("True fileName : "+ dataPointWritingService.getFilename());
+        //dataPointWritingService.setFilename(fileName);
+        //dataPointWritingService.setAppend(true);
+        //System.out.println("True fileName : "+ dataPointWritingService.getFilename());
 
 
         //为每一种数据类型建议一个文件夹表示其类型信息
         for (MeasureGenerationRequest request : dataGenerationSettings.getMeasureGenerationRequests()) {
             String name = request.getGeneratorName();
+            //文件名
+            String destination = fileName + name + ".json";
+            System.out.println("存入文件:"+destination);
+
             System.out.println("dataTransfer Info: "+dataTransferMap.toString());
             System.out.println("当前数据产生器为: "+name);
 
@@ -192,12 +215,6 @@ public class DataGeneratorController {
             System.out.println("对应转换器："+dataTransferMap.get(name));
 
             Iterable<? extends MeasureDTO> DTOlist = (dataTransferMap.get(name)).transferDatas(valueGroups);
-            //文件操作
-            String filePath = root + request.getGeneratorName()+"/";
-            File leaf = new File(filePath);
-            if(!leaf.exists()){
-                leaf.mkdir();
-            }
 
             DataPointGenerator<?> dataPointGenerator = dataPointGeneratorMap.get(name);
             /**
@@ -206,14 +223,14 @@ public class DataGeneratorController {
              * 从里面取数据是比较方便的
              * 这里"?"代表的是一种数据类型,如HeartRate
              */
-            Iterable<? extends DataPoint<?>> dataPoints = dataPointGenerator.generateDataPoints(valueGroups);
+            //Iterable<? extends DataPoint<?>> dataPoints = dataPointGenerator.generateDataPoints(valueGroups);
             //打印list信息
             String measureListString  = objectMapper.writeValueAsString(DTOlist);
             System.out.println(measureListString);
 
             jsonObject.setList(name, (List<? extends MeasureDTO>) DTOlist);
+            System.out.println("当前Measure size:"+((List<? extends MeasureDTO>) DTOlist).size());
             for (MeasureDTO measureDTO:DTOlist){
-
                 String jsonString = objectMapper.writeValueAsString(measureDTO);
                 System.out.println("measure info:"+jsonString);
                 //System.out.println(measureDTO.toString());
@@ -238,17 +255,50 @@ public class DataGeneratorController {
              }
              createCSV(head, values, "OxygenSaturation.csv");
              **/
+            dataWrite2FileService.setFilename(destination);
+            dataWrite2FileService.setAppend(true);
+            //long written = dataWrite2FileService.writeDatas(DTOlist);
+            //long written = dataPointWritingService.writeDataPoints(dataPoints);
+            //totalWritten += written;
 
-            long written = dataPointWritingService.writeDataPoints(dataPoints);
-            totalWritten += written;
-
-            log.info("The '{}' generator has written {} data point(s).", dataPointGenerator.getName(), written);
+            //log.info("The '{}' generator has written {} data point(s).", dataPointGenerator.getName(), written);
         }
+        /**
+         * 设置objectMapper的字段命名映射策略为小驼峰
+         */
+        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE);
         String data = objectMapper.writeValueAsString(jsonObject);
         System.out.println("jsonObject info:"+data);
-        log.info("A total of {} data point(s) have been written.", totalWritten);
 
+        //test push data 代码
+        String url = "http://192.168.0.129:8080/data";      //刑雄
+        String url1 = "http://192.168.0.163:8080/data";    //文山
+        pushTest(url, data);
+        log.info("A total of {} data point(s) have been written.", totalWritten);
     }
+
+
+    public void pushTest(String url, String data) throws IOException {
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        HttpPost httpPost = new HttpPost(url);
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectTimeout(10000)
+                .setConnectionRequestTimeout(10000)
+                .setSocketTimeout(10000)
+                .build();
+        httpPost.setConfig(requestConfig);
+        httpPost.setHeader("Content-Type", "application/json;charset=UTF-8");//表示客户端发送给服务器端的数据格式
+        //httpPost.setHeader("Accept", "*/*");这样也ok,只不过服务端返回的数据不一定为json
+        httpPost.setHeader("Accept", "application/json");                    //表示服务端接口要返回给客户端的数据格式，
+        StringEntity entity = new StringEntity(data, ContentType.APPLICATION_JSON);
+        httpPost.setEntity(entity);
+
+        CloseableHttpResponse response = httpclient.execute(httpPost);
+
+        System.out.println("push data!!!!");
+        System.out.println("the data has been pushed is :"+data);
+    }
+
     /**
     * @Description: get dataPoints from this application
     * @Param: DataGenerationRequest dataGenerationRequest

@@ -1,5 +1,8 @@
 package org.openmhealth.data.generator.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import org.openmhealth.data.generator.constant.HeartRate;
 import org.openmhealth.schema.serializer.SerializationConstructor;
 
@@ -10,13 +13,14 @@ import org.openmhealth.schema.serializer.SerializationConstructor;
  * @Date 2021/7/7 9:35
  * @Version 1.0
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+//@JsonNaming(PropertyNamingStrategy.UpperCamelCaseStrategy.class)
 public class EcgDetailDTO extends MeasureDTO {
 
     /*
     ecg类型
      */
-    private Integer ecgType;
-
+    private Integer mField;
 
     /*
     电压值
@@ -29,15 +33,15 @@ public class EcgDetailDTO extends MeasureDTO {
 
     public static class Builder extends MeasureDTO.Builder<EcgDetailDTO, Builder>{
 
-        private Integer ecgType;
+        private Integer mField;
         private Double voltageDatas;
 
         public Builder (Double voltageDatas) {
             this.voltageDatas = voltageDatas;
         }
 
-        public Builder setECGType(Integer ecgType) {
-            this.ecgType = ecgType;
+        public Builder setmField(Integer mField) {
+            this.mField = mField;
             return this;
         }
 
@@ -50,12 +54,12 @@ public class EcgDetailDTO extends MeasureDTO {
 
     private EcgDetailDTO(Builder builder) {
         super(builder);
-        this.ecgType = builder.ecgType;
+        this.mField = builder.mField;
         this.voltageDatas = builder.voltageDatas;
     }
 
-    public Integer getEcgType() {
-        return ecgType;
+    public Integer getmField() {
+        return mField;
     }
 
     public Double getVoltageDatas() {
@@ -65,7 +69,7 @@ public class EcgDetailDTO extends MeasureDTO {
     @Override
     public String toString() {
         return "EcgDetailDTO{" +
-                "ecgType=" + ecgType +
+                "mField=" + mField +
                 ", voltageDatas=" + voltageDatas +
                 '}';
     }

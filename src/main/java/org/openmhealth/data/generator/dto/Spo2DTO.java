@@ -13,7 +13,7 @@ import org.openmhealth.schema.serializer.SerializationConstructor;
  * @Version 1.0
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+//@JsonNaming(PropertyNamingStrategy.UpperCamelCaseStrategy.class)
 public class Spo2DTO extends MeasureDTO{
 
     /*
@@ -21,11 +21,10 @@ public class Spo2DTO extends MeasureDTO{
      */
     private Double spo2;
 
-
     /*
     必备指标
      */
-    private String mField;
+    private Integer mField;
 
     /*
     是否进行氧疗
@@ -35,7 +34,8 @@ public class Spo2DTO extends MeasureDTO{
     /*
     spo2测量
      */
-    private String spo2Measurement;
+    private Integer spo2Measurement;
+
     @SerializationConstructor
     protected Spo2DTO() {
     }
@@ -44,15 +44,15 @@ public class Spo2DTO extends MeasureDTO{
     public static class Builder extends MeasureDTO.Builder<Spo2DTO, Spo2DTO.Builder>{
 
         private Double spo2;
-        private String mField;
+        private Integer mField;
         private Boolean oxygenTherapy;
-        private String spo2Measurement;
+        private Integer spo2Measurement;
 
         public Builder (Double spo2) {
             this.spo2 = spo2;
         }
 
-        public Builder setmField(String mField) {
+        public Builder setmField(Integer mField) {
             this.mField = mField;
             return this;
         }
@@ -62,7 +62,7 @@ public class Spo2DTO extends MeasureDTO{
             return this;
         }
 
-        public Builder setSpo2Measurement(String spo2Measurement) {
+        public Builder setSpo2Measurement(Integer spo2Measurement) {
             this.spo2Measurement = spo2Measurement;
             return this;
         }
@@ -85,7 +85,7 @@ public class Spo2DTO extends MeasureDTO{
         return spo2;
     }
 
-    public String getmField() {
+    public Integer getmField() {
         return mField;
     }
 
@@ -93,7 +93,7 @@ public class Spo2DTO extends MeasureDTO{
         return oxygenTherapy;
     }
 
-    public String getSpo2Measurement() {
+    public Integer getSpo2Measurement() {
         return spo2Measurement;
     }
 

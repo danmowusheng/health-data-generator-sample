@@ -26,7 +26,7 @@ public class ECGDetailDTOTransfer extends AbstractTransfer<EcgDetailDTO>{
     @Override
     public EcgDetailDTO newMeasureDTO(TimestampedValueGroup timestampedValueGroup) {
         return new EcgDetailDTO.Builder(timestampedValueGroup.getValue(VOLTAGE_KEY))
-                    .setECGType(ECG_TYPE)
+                    .setmField(ECG_TYPE)
                     .setTimestamp(timestampedValueGroup.getTimestamp())
                     .build();
     }

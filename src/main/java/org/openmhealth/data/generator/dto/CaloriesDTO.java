@@ -1,11 +1,7 @@
 package org.openmhealth.data.generator.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import org.openmhealth.schema.serializer.SerializationConstructor;
-
-import java.util.Objects;
 
 /**
  * @ClassName CaloriesDTO
@@ -15,13 +11,13 @@ import java.util.Objects;
  * @Version 1.0
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+//@JsonNaming(PropertyNamingStrategy.UpperCamelCaseStrategy.class)
 public class CaloriesDTO extends MeasureDTO{
 
     /*
     卡路里
      */
-    private Double caloriesCount;
+    private Double calories;
 
     @SerializationConstructor
     protected CaloriesDTO() {
@@ -49,17 +45,17 @@ public class CaloriesDTO extends MeasureDTO{
 
     private CaloriesDTO(Builder builder) {
         super(builder);
-        this.caloriesCount = builder.caloriesCount;
+        this.calories = builder.caloriesCount;
     }
 
-    public Double getCaloriesCount() {
-        return caloriesCount;
+    public Double getCalories() {
+        return calories;
     }
 
     @Override
     public String toString() {
         return "CaloriesDTO{" +
-                "caloriesCount=" + caloriesCount +
+                "caloriesCount=" + calories +
                 '}';
     }
 }

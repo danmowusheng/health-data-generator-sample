@@ -18,14 +18,14 @@ data:
 
   # data is generated according to these optional default values unless overridden in the measures
   # the earliest date time of the measures to generate, defaults to January 1st, 2014 at noon UTC
-  start-date-time: 2015-01-01T12:00:00Z
+  start-date-time: 2018-03-10T12:00:00Z
 
   # the latest date time of the measures to generate, defaults to January 1st, 2015 at noon UTC
-  end-date-time: 2015-01-01T20:00:00Z
+  end-date-time: 2018-03-10T16:00:00Z
 
   # the mean duration between the effective time frames of consecutive measures, defaults to 24 hours
   # this is specified in ISO8601 duration format, see https://www.ietf.org/rfc/rfc3339.txt page 12
-  mean-inter-point-duration: PT1H
+  mean-inter-point-duration: PT2H
 
   # true if measures having effective time frames at night should be suppressed, defaults to false
   # a measure is considered to occur at night if its effective time frame is after 23:00 or before 6:00
@@ -66,6 +66,7 @@ data:
 #        standard-deviation: 3
 #
     - generator: body-weight
+      mean-inter-point-duration: PT60m
       trends:
         ? weight-in-kg
         : start-value: 55
@@ -116,6 +117,7 @@ data:
 #        standard-deviation: 1000
 #
     - generator: heart-rate
+      mean-inter-point-duration: PT20m
       trends:
         ? rate-in-beats-per-minute
         : start-value: 80
@@ -170,6 +172,7 @@ data:
 #        standard-deviation: 0.3
 #
     - generator: sleep-duration
+      mean-inter-point-duration: PT20H
       trends:
         ? duration-in-hours
         : start-value: 8
@@ -181,6 +184,7 @@ data:
 #
 #   只单纯在yml文件中定义generator无法在初始化的时候生成，需要使用@Component注解定义到Spring容器中
     - generator: oxygen-saturation
+      mean-inter-point-duration: PT30m
       trends:
         ? percentage
         : start-value: 95
@@ -196,6 +200,7 @@ data:
           standard-deviation: 0
 
     - generator: calorie-count
+      mean-inter-point-duration: PT15m
       trends:
         ? calorie-burned
         : start-value: 10
@@ -203,8 +208,9 @@ data:
           minimum-value: 0
           maximum-value: 200
           standard-deviation: 5
-# 与step-count类似
+#   与step-count类似
     - generator: distance
+      mean-inter-point-duration: PT5m
       trends:
         ? duration-in-seconds
         : start-value: 300
@@ -220,6 +226,7 @@ data:
           standard-deviation: 3
 
     - generator: geo-position
+      mean-inter-point-duration: PT5m
       trends:
         ? latitude
         : start-value: 50
@@ -241,6 +248,7 @@ data:
           standard-deviation: 0
 
     - generator: stress-detail
+      mean-inter-point-duration: PT60m
       trends:
         ? stress-value
         : start-value: 10
@@ -248,3 +256,29 @@ data:
           minimum-value: 1
           maximum-value: 99
           standard-deviation: 3
+
+    - generator: ECG-detail
+      mean-inter-point-duration: PT2H
+      trends:
+        ? voltage-value
+        : start-value: 10
+          end-value: 20
+          minimum-value: 1
+          maximum-value: 99
+          standard-deviation: 1
+#
+    - generator: ECG-record
+      mean-inter-point-duration: PT2H
+      trends:
+        ? ecg-value
+        : start-value: 10
+          end-value: 20
+          minimum-value: 1
+          maximum-value: 99
+          standard-deviation: 1
+        ? heart-rate-avg
+        : start-value: 80
+          end-value: 80
+          minimum-value: 0
+          maximum-value: 120
+          standard-deviation: 10

@@ -18,7 +18,7 @@ import static org.openmhealth.data.generator.service.SleepDurationDataPointGener
 @Component
 public class SleepFragmentDTOTransfer extends AbstractTransfer<SleepFragmentDTO> {
     private static final SleepFragment M_FIELD = SleepFragment.DREAM_SLEEP;
-
+    private static final Integer SLEEP_FRAGMENT = 1;
     @Override
     public String getName(){
         return "sleep-duration";
@@ -28,7 +28,8 @@ public class SleepFragmentDTOTransfer extends AbstractTransfer<SleepFragmentDTO>
     public SleepFragmentDTO newMeasureDTO(TimestampedValueGroup timestampedValueGroup) {
         return new SleepFragmentDTO.Builder(timestampedValueGroup.getValue(DURATION_KEY))
                     .setTimestamp(timestampedValueGroup.getTimestamp())
-                    .setmField(M_FIELD.ordinal())
+                    .setmField(1)
+                    .setSleepFragment(SLEEP_FRAGMENT)
                     .build();
     }
 }

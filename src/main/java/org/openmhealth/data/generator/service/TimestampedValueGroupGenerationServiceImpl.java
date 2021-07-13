@@ -79,6 +79,11 @@ public class TimestampedValueGroupGenerationServiceImpl implements TimestampedVa
                 BoundedRandomVariableTrend trend = trendEntry.getValue();
 
                 double value = trend.nextValue(trendProgressFraction);
+                /**
+                 * 修改double类型保留小数点后两位
+                 * 四舍五入会导致有可能不一定会有两位小数
+                 */
+                value = (double)Math.round(value*100)/100;
                 valueGroup.setValue(key, value);
             }
             //增加一个带时间戳的数据

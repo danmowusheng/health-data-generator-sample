@@ -14,7 +14,7 @@ import org.openmhealth.schema.serializer.SerializationConstructor;
  * @Version 1.0
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+//@JsonNaming(PropertyNamingStrategy.UpperCamelCaseStrategy.class)
 public class HeartRateDTO extends MeasureDTO{
 
     /*
@@ -25,7 +25,7 @@ public class HeartRateDTO extends MeasureDTO{
     /*
     测量类型
      */
-    private HeartRate mField;
+    private Integer mField;
 
     @SerializationConstructor
     protected HeartRateDTO() {
@@ -34,13 +34,13 @@ public class HeartRateDTO extends MeasureDTO{
     public static class Builder extends MeasureDTO.Builder<HeartRateDTO, Builder>{
 
         private Integer heartRate;
-        private HeartRate mField;
+        private Integer mField;
 
         public Builder (Integer heartRate) {
             this.heartRate = heartRate;
         }
 
-        public Builder setmField(HeartRate mField) {
+        public Builder setmField(Integer mField) {
             this.mField = mField;
             return this;
         }
@@ -61,7 +61,7 @@ public class HeartRateDTO extends MeasureDTO{
         return heartRate;
     }
 
-    public HeartRate getmField() {
+    public Integer getmField() {
         return mField;
     }
 

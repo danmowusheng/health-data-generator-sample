@@ -27,7 +27,7 @@ public class LocationSampleDTOTransfer extends AbstractTransfer<LocationSampleDT
     public LocationSampleDTO newMeasureDTO(TimestampedValueGroup timestampedValueGroup) {
         return new LocationSampleDTO.Builder(timestampedValueGroup.getValue(LATITUDE_KEY))
                     .setTimestamp(timestampedValueGroup.getTimestamp())
-                    .setmField((timestampedValueGroup.getValue(M_FIELD)).intValue())
+                    .setmField(2)
                     .build();
     }
 }

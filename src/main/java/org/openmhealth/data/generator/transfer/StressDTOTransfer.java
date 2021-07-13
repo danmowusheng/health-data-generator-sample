@@ -19,7 +19,7 @@ import static org.openmhealth.data.generator.service.StressDataPointGenerator.ST
  **/
 @Component
 public class StressDTOTransfer extends AbstractTransfer<StressDTO> {
-
+    //StressMeasureType.PASSIVE.ordinal()
     @Override
     public String getName(){
         return "stress-detail";
@@ -29,7 +29,7 @@ public class StressDTOTransfer extends AbstractTransfer<StressDTO> {
     public StressDTO newMeasureDTO(TimestampedValueGroup timestampedValueGroup) {
         return new StressDTO.Builder(timestampedValueGroup.getValue(STRESS_KEY).intValue()).setTimestamp(timestampedValueGroup.getTimestamp())
                     .setGrade(StressGrade.NORMAL.ordinal())
-                    .setMeasureType(StressMeasureType.PASSIVE.ordinal())
+                    .setMeasureType(1)
                     .build();
     }
 }

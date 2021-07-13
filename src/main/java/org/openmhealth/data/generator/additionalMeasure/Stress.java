@@ -20,7 +20,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @description：
  **/
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+//@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class Stress extends Measure {
 
     public static final SchemaId SCHEMA_ID = new SchemaId(OMH_NAMESPACE, "body-height", "1.0");
