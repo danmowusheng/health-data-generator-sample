@@ -1,5 +1,6 @@
 package org.openmhealth.data.generator.transfer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.openmhealth.data.generator.domain.TimestampedValueGroup;
 import org.openmhealth.data.generator.dto.StepsDTO;
 import org.springframework.stereotype.Component;
@@ -26,5 +27,10 @@ public class StepCountDTOTransfer extends AbstractTransfer<StepsDTO> {
         return new StepsDTO.Builder(timestampedValueGroup.getValue(STEPS_PER_MINUTE_KEY).intValue())
                     .setTimestamp(timestampedValueGroup.getTimestamp())
                     .build();
+    }
+
+    @Override
+    public StepsDTO newMeasureDTOMapper(String jsonString) throws JsonProcessingException {
+        return objectMapper.readValue(jsonString,StepsDTO.class);
     }
 }

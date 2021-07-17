@@ -1,9 +1,6 @@
 package org.openmhealth.data.generator.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import org.openmhealth.data.generator.constant.HeartRate;
 import org.openmhealth.schema.serializer.SerializationConstructor;
 
 /**
@@ -20,12 +17,17 @@ public class EcgDetailDTO extends MeasureDTO {
     /*
     ecg类型
      */
-    private Integer mField;
+    private Integer ecgLead;
 
     /*
     电压值
      */
-    private Double voltageDatas;
+    private Double ecgDetail;
+
+    /*
+    标识（所属ecg_record的开始时间）
+    */
+    private Long identifier;
 
     @SerializationConstructor
     protected EcgDetailDTO(){
@@ -33,15 +35,17 @@ public class EcgDetailDTO extends MeasureDTO {
 
     public static class Builder extends MeasureDTO.Builder<EcgDetailDTO, Builder>{
 
-        private Integer mField;
-        private Double voltageDatas;
+        private Integer ecgLead;
+        private Double ecgDetail;
+        private Long identifier;
 
-        public Builder (Double voltageDatas) {
-            this.voltageDatas = voltageDatas;
+        public Builder (Double ecgDetail, Long identifier) {
+            this.ecgDetail = ecgDetail;
+            this.identifier = identifier;
         }
 
-        public Builder setmField(Integer mField) {
-            this.mField = mField;
+        public Builder setEcgLead(Integer ecgLead) {
+            this.ecgLead = ecgLead;
             return this;
         }
 
@@ -54,23 +58,29 @@ public class EcgDetailDTO extends MeasureDTO {
 
     private EcgDetailDTO(Builder builder) {
         super(builder);
-        this.mField = builder.mField;
-        this.voltageDatas = builder.voltageDatas;
+        this.ecgLead = builder.ecgLead;
+        this.ecgDetail = builder.ecgDetail;
+        this.identifier = builder.identifier;
     }
 
-    public Integer getmField() {
-        return mField;
+    public Integer getEcgLead() {
+        return ecgLead;
     }
 
-    public Double getVoltageDatas() {
-        return voltageDatas;
+    public Double getEcgDetail() {
+        return ecgDetail;
+    }
+
+    public Long getIdentifier() {
+        return identifier;
     }
 
     @Override
     public String toString() {
         return "EcgDetailDTO{" +
-                "mField=" + mField +
-                ", voltageDatas=" + voltageDatas +
+                "ecgLead=" + ecgLead +
+                ", ecgDetail=" + ecgDetail +
+                ", identifier=" + identifier +
                 '}';
     }
 }

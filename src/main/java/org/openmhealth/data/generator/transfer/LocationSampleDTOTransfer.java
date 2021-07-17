@@ -1,10 +1,9 @@
 package org.openmhealth.data.generator.transfer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.openmhealth.data.generator.domain.TimestampedValueGroup;
 import org.openmhealth.data.generator.dto.LocationSampleDTO;
 import org.springframework.stereotype.Component;
-
-import java.time.temporal.ChronoField;
 
 import static org.openmhealth.data.generator.service.LocationDataPointGenerator.LATITUDE_KEY;
 
@@ -16,7 +15,8 @@ import static org.openmhealth.data.generator.service.LocationDataPointGenerator.
  **/
 @Component
 public class LocationSampleDTOTransfer extends AbstractTransfer<LocationSampleDTO> {
-    private static final String M_FIELD = "latitude";
+    public static final String LATITUDE = "latitude";
+    public static final String LONGITUDE = "longitude";
 
     @Override
     public String getName(){
@@ -27,7 +27,12 @@ public class LocationSampleDTOTransfer extends AbstractTransfer<LocationSampleDT
     public LocationSampleDTO newMeasureDTO(TimestampedValueGroup timestampedValueGroup) {
         return new LocationSampleDTO.Builder(timestampedValueGroup.getValue(LATITUDE_KEY))
                     .setTimestamp(timestampedValueGroup.getTimestamp())
-                    .setmField(2)
+                    .setGpsType(1)
                     .build();
+    }
+
+    @Override
+    public LocationSampleDTO newMeasureDTOMapper(String jsonString) throws JsonProcessingException {
+        return objectMapper.readValue(jsonString,LocationSampleDTO.class);
     }
 }

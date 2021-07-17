@@ -1,5 +1,7 @@
 package org.openmhealth.data.generator.transfer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openmhealth.data.generator.domain.TimestampedValueGroup;
 import org.openmhealth.data.generator.dto.DistanceDTO;
 import org.springframework.stereotype.Component;
@@ -27,5 +29,10 @@ public class DistanceDTOTransfer extends AbstractTransfer<DistanceDTO> {
         return new DistanceDTO.Builder(timestampedValueGroup.getValue(DISTANCE_PER_MINUTE_KEY))
                     .setTimestamp(timestampedValueGroup.getTimestamp())
                     .build();
+    }
+
+    @Override
+    public DistanceDTO newMeasureDTOMapper(String jsonString) throws JsonProcessingException {
+        return objectMapper.readValue(jsonString, DistanceDTO.class);
     }
 }

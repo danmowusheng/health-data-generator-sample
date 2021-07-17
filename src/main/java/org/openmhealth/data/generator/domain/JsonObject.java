@@ -26,7 +26,7 @@ public class JsonObject {
     List<EcgRecordDTO> ecgRecord;
     List<HeartRateDTO> heartRate;
     List<LocationSampleDTO> locationSample;
-    List<SleepFragmentDTO> sleepFragment;
+    List<SleepDurationDTO> sleepFragment;
     List<Spo2DTO> spo2;
     List<StepsDTO> steps;
     List<StressDTO> stress;
@@ -72,7 +72,7 @@ public class JsonObject {
                 this.locationSample = (List<LocationSampleDTO>) DTOlist;
                 break;
             case "sleep-duration":
-                this.sleepFragment = (List<SleepFragmentDTO>) DTOlist;
+                this.sleepFragment = (List<SleepDurationDTO>) DTOlist;
                 break;
             case "step-count":
                 this.steps = (List<StepsDTO>) DTOlist;
@@ -150,11 +150,11 @@ public class JsonObject {
         this.locationSample = locationSample;
     }
 
-    public List<SleepFragmentDTO> getSleepFragment() {
+    public List<SleepDurationDTO> getSleepFragment() {
         return sleepFragment;
     }
 
-    public void setSleepFragment(List<SleepFragmentDTO> sleepFragment) {
+    public void setSleepFragment(List<SleepDurationDTO> sleepFragment) {
         this.sleepFragment = sleepFragment;
     }
 

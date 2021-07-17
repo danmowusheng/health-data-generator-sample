@@ -14,7 +14,6 @@ import java.util.Set;
  * @create: 2021-07-11 10:21
  * @description：
  **/
-@Component
 public class ECGDetailDTODataPointGenerator extends AbstractDataPointGeneratorImpl<ECGDetail>{
     public static final String  VOLTAGE_KEY = "voltage-value";
     @Override

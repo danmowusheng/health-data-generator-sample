@@ -1,12 +1,7 @@
 package org.openmhealth.data.generator.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import org.openmhealth.data.generator.constant.BodyWeight;
 import org.openmhealth.schema.serializer.SerializationConstructor;
-
-import java.sql.BatchUpdateException;
 
 /**
  * @ClassName BodyWeightDTO
@@ -27,7 +22,7 @@ public class BodyWeightDTO extends MeasureDTO{
     /*
     必需label,体重的类型
      */
-    private Integer mField;
+    private Integer weightType;
 
     @SerializationConstructor
     protected BodyWeightDTO(){
@@ -35,14 +30,14 @@ public class BodyWeightDTO extends MeasureDTO{
 
     public static class Builder extends MeasureDTO.Builder<BodyWeightDTO, BodyWeightDTO.Builder>{
         private Double bodyWeight;
-        private Integer mField;
+        private Integer weightType;
 
         public Builder (Double bodyWeight) {
             this.bodyWeight = bodyWeight;
         }
 
-        public Builder setmField(Integer mField) {
-            this.mField = mField;
+        public Builder setWeightType(Integer weightType) {
+            this.weightType = weightType;
             return this;
         }
 
@@ -55,22 +50,22 @@ public class BodyWeightDTO extends MeasureDTO{
     public BodyWeightDTO(Builder builder) {
         super(builder);
         this.bodyWeight = builder.bodyWeight;
-        this.mField = builder.mField;
+        this.weightType = builder.weightType;
     }
 
     public Double getBodyWeight() {
         return bodyWeight;
     }
 
-    public Integer getmField() {
-        return mField;
+    public Integer getWeightType() {
+        return weightType;
     }
 
     @Override
     public String toString() {
         return "BodyWeightDTO{" +
                 "bodyWeight=" + bodyWeight +
-                ", mField=" + mField +
+                ", weightType=" + weightType +
                 '}';
     }
 }

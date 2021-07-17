@@ -1,5 +1,6 @@
 package org.openmhealth.data.generator.transfer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.openmhealth.data.generator.constant.StressGrade;
 import org.openmhealth.data.generator.constant.StressMeasureType;
 import org.openmhealth.data.generator.domain.TimestampedValueGroup;
@@ -27,9 +28,15 @@ public class StressDTOTransfer extends AbstractTransfer<StressDTO> {
 
     @Override
     public StressDTO newMeasureDTO(TimestampedValueGroup timestampedValueGroup) {
-        return new StressDTO.Builder(timestampedValueGroup.getValue(STRESS_KEY).intValue()).setTimestamp(timestampedValueGroup.getTimestamp())
-                    .setGrade(StressGrade.NORMAL.ordinal())
+        return new StressDTO.Builder(timestampedValueGroup.getValue(STRESS_KEY).intValue())
+                    .setTimestamp(timestampedValueGroup.getTimestamp())
+                    .setGrade(1)
                     .setMeasureType(1)
                     .build();
+    }
+
+    @Override
+    public StressDTO newMeasureDTOMapper(String jsonString) throws JsonProcessingException {
+        return objectMapper.readValue(jsonString,StressDTO.class);
     }
 }

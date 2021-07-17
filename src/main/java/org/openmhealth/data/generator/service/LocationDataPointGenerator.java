@@ -28,7 +28,7 @@ public class LocationDataPointGenerator extends AbstractDataPointGeneratorImpl<G
     public Geoposition newMeasure(TimestampedValueGroup valueGroup) {
         return new Geoposition.Builder(new PlaneAngleUnitValue(PlaneAngleUnit.DEGREE_OF_ARC,valueGroup.getValue(LATITUDE_KEY)),
                 new PlaneAngleUnitValue(PlaneAngleUnit.DEGREE_OF_ARC, valueGroup.getValue(LONGITUDE_KEY)), valueGroup.getTimestamp())
-                .setElevation(new LengthUnitValue(LengthUnit.METER, valueGroup.getValue(EVALUATION_KEY)))
+                .setElevation(new LengthUnitValue(LengthUnit.METER, 50))
                 .build();
     }
 
@@ -39,7 +39,7 @@ public class LocationDataPointGenerator extends AbstractDataPointGeneratorImpl<G
 
     @Override
     public Set<String> getRequiredValueGroupKeys() {
-        return Sets.newHashSet(LATITUDE_KEY, LONGITUDE_KEY, EVALUATION_KEY);
+        return Sets.newHashSet(LATITUDE_KEY, LONGITUDE_KEY);
     }
 
     @Override

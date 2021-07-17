@@ -1,8 +1,6 @@
 package org.openmhealth.data.generator.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import org.openmhealth.schema.serializer.SerializationConstructor;
 
 /**
@@ -24,7 +22,7 @@ public class Spo2DTO extends MeasureDTO{
     /*
     必备指标
      */
-    private Integer mField;
+    private Integer spo2Type;
 
     /*
     是否进行氧疗
@@ -44,7 +42,7 @@ public class Spo2DTO extends MeasureDTO{
     public static class Builder extends MeasureDTO.Builder<Spo2DTO, Spo2DTO.Builder>{
 
         private Double spo2;
-        private Integer mField;
+        private Integer spo2Type;
         private Boolean oxygenTherapy;
         private Integer spo2Measurement;
 
@@ -52,8 +50,8 @@ public class Spo2DTO extends MeasureDTO{
             this.spo2 = spo2;
         }
 
-        public Builder setmField(Integer mField) {
-            this.mField = mField;
+        public Builder setSpo2Type(Integer spo2Type) {
+            this.spo2Type = spo2Type;
             return this;
         }
 
@@ -75,7 +73,7 @@ public class Spo2DTO extends MeasureDTO{
 
     private Spo2DTO(Builder builder) {
         super(builder);
-        this.mField = builder.mField;
+        this.spo2Type = builder.spo2Type;
         this.oxygenTherapy = builder.oxygenTherapy;
         this.spo2 = builder.spo2;
         this.spo2Measurement = builder.spo2Measurement;
@@ -85,8 +83,8 @@ public class Spo2DTO extends MeasureDTO{
         return spo2;
     }
 
-    public Integer getmField() {
-        return mField;
+    public Integer getSpo2Type() {
+        return spo2Type;
     }
 
     public Boolean getOxygenTherapy() {
@@ -101,9 +99,9 @@ public class Spo2DTO extends MeasureDTO{
     public String toString() {
         return "Spo2DTO{" +
                 "spo2=" + spo2 +
-                ", mField='" + mField + '\'' +
+                ", spo2Type=" + spo2Type +
                 ", oxygenTherapy=" + oxygenTherapy +
-                ", spo2Measurement='" + spo2Measurement + '\'' +
+                ", spo2Measurement=" + spo2Measurement +
                 '}';
     }
 }

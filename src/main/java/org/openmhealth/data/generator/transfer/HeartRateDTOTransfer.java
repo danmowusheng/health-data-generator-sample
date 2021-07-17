@@ -1,11 +1,10 @@
 package org.openmhealth.data.generator.transfer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.openmhealth.data.generator.constant.HeartRate;
 import org.openmhealth.data.generator.domain.TimestampedValueGroup;
 import org.openmhealth.data.generator.dto.HeartRateDTO;
 import org.springframework.stereotype.Component;
-
-import java.time.temporal.ChronoField;
 
 /**
  * @program: test-gradle
@@ -28,7 +27,12 @@ public class HeartRateDTOTransfer extends AbstractTransfer<HeartRateDTO> {
     public HeartRateDTO newMeasureDTO(TimestampedValueGroup valueGroup) {
         return new HeartRateDTO.Builder((valueGroup.getValue(RATE_KEY)).intValue())
                 .setTimestamp(valueGroup.getTimestamp())
-                .setmField(1)
+                .setBpmMode(1)
                 .build();
+    }
+
+    @Override
+    public HeartRateDTO newMeasureDTOMapper(String jsonString) throws JsonProcessingException {
+        return objectMapper.readValue(jsonString,HeartRateDTO.class);
     }
 }

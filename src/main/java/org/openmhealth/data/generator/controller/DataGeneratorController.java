@@ -7,9 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.base.Joiner;
-import com.google.common.collect.Iterators;
 import com.google.common.collect.Sets;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -22,8 +20,9 @@ import org.openmhealth.data.generator.Application;
 import org.openmhealth.data.generator.configuration.DataGenerationSettings;
 import org.openmhealth.data.generator.converter.OffsetDateTime2String;
 import org.openmhealth.data.generator.domain.*;
-import org.openmhealth.data.generator.dto.MeasureDTO;
+import org.openmhealth.data.generator.dto.*;
 import org.openmhealth.data.generator.service.*;
+import org.openmhealth.data.generator.transfer.BodyWeightDTOTransfer;
 import org.openmhealth.data.generator.transfer.Transfer;
 import org.openmhealth.schema.domain.omh.*;
 
@@ -37,9 +36,15 @@ import javax.annotation.PostConstruct;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.io.*;
+import java.sql.Time;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 import static java.time.temporal.ChronoUnit.SECONDS;
+import static org.openmhealth.data.generator.controller.AutoPusherController.dataGenerationSettingsList;
+import static org.openmhealth.data.generator.controller.AutoPusherController.dataTransferMap;
 
 /**
  * @program: data-generator
@@ -76,73 +81,24 @@ public class DataGeneratorController {
 
     private Map<String, DataPointGenerator<?>> dataPointGeneratorMap = new HashMap<>();
 
-    private Map<String, Transfer<?>> dataTransferMap = new HashMap<>();
-
     private OffsetDateTime2String offsetDateTime2String = new OffsetDateTime2String();
-
-    private List<DataGenerationSettings> dataGenerationSettingsList = new ArrayList<>();
 
 
     @Autowired
     private ObjectMapper objectMapper;
 
 
-    @PostConstruct
-    public void initializeDataPointGenerationSettings(){
-        System.out.println("Start initial all dataPointGeneratorsSettings...");
-        System.out.println(dataGenerationSettings.toString());
-        int size = 10;
-        while (size!=0){
-            size--;
-            String userID = getId(size);
-            DataGenerationSettings newSetting = new DataGenerationSettings();
-            newSetting.setUserID(userID);
-            newSetting.setStartDateTime(dataGenerationSettings.getStartDateTime());
-            newSetting.setEndDateTime(dataGenerationSettings.getEndDateTime());
-            newSetting.setMeanInterPointDuration(dataGenerationSettings.getMeanInterPointDuration());
-            newSetting.setMeasureGenerationRequests(dataGenerationSettings.getMeasureGenerationRequests());
-            dataGenerationSettingsList.add(newSetting);
-            System.out.println(userID+"的数据产生器设置初始化成功!"+" 开始时间:"+newSetting.getStartDateTime());
-            //System.out.println(newSetting.toString());
-        }
-        System.out.println("initialization done");
-    }
-
-
-    public String getId(int n){
-        StringBuilder sb = new StringBuilder();
-        int len = 3-(""+n).length();
-        while (len!=0){
-            sb.append(0);
-            len--;
-        }
-        sb.append(n);
-        return sb.toString();
-    }
-
     /**
-    * @Description: this initialized all dataPointGenerators, @PostConstruct is an annotation used to load this func when application is started
-    * @Param: null
-    * @author: LJ
-    * @Date: 2021/6/22
-    **/
+     * 1.其他初始化代码已经放入AutoPusherController中
+     */
     @PostConstruct
-    public void initializeDataPointGenerators() {
-        System.out.println("初始化所有的dataGenerator...");
-
-        for (DataPointGenerator generator : dataPointGenerators) {
-            dataPointGeneratorMap.put(generator.getName(), generator);
-            System.out.println(generator.getName());
+    public void InitialDataGenerator(){
+        System.out.println("初始化所有dataGenerator...");
+        for (DataPointGenerator<?> dataPointGenerator: dataPointGenerators){
+            dataPointGeneratorMap.put(dataPointGenerator.getName(), dataPointGenerator);
+            System.out.println(dataPointGenerator.getName());
         }
-        System.out.println("共初始化"+dataPointGeneratorMap.size()+"个数据产生器");
-
-        System.out.println("初始化所有需要的转换器...");
-        for (Transfer transfer:dataTransfer){
-            dataTransferMap.put(transfer.getName(), transfer);
-            System.out.println(transfer.getName());
-        }
-        System.out.println("共初始化"+dataTransferMap.size()+"个转换器");
-        System.out.println("初始化完成");
+        System.out.println("共有"+dataPointGeneratorMap.size()+"个generator");
     }
 
 
@@ -216,12 +172,38 @@ public class DataGeneratorController {
 
             Iterable<? extends MeasureDTO> DTOlist = (dataTransferMap.get(name)).transferDatas(valueGroups);
 
+            /**
+             * 对ECG-Record需要特殊处理
+             */
+            if (name.equals("ECG-record")){
+                System.out.println("当前数据类型需要特殊处理，会产生一组衍生值");
+                List<EcgRecordDTO> records = (List<EcgRecordDTO>)DTOlist;
+                List<EcgDetailDTO> details = new ArrayList<>();
+                for(EcgRecordDTO record:records){
+                    details.addAll(getEcgDetail(record));
+                }
+                for (EcgDetailDTO ecgDetailDTO:details){
+                    String jsonString = objectMapper.writeValueAsString(ecgDetailDTO);
+                    System.out.println("measure info:"+jsonString);
+                }
+                String ecgDetailName = "ECG-detail";
+                String path = fileName + ecgDetailName + ".json";
+                dataWrite2FileService.setFilename(path);
+                dataWrite2FileService.setAppend(false);
+                dataWrite2FileService.clearFile();
+                //写入数据
+                //dataWrite2FileService.writeDatas(details);
+                jsonObject.setList(ecgDetailName, details);
+                System.out.println("detail信息产生并写入完成!");
+            }
+
             DataPointGenerator<?> dataPointGenerator = dataPointGeneratorMap.get(name);
             /**
              * Iterable可以简单理解为实现了一个可以存放东西的容器
              * 里面可以存放各种各样的dataPoint
              * 从里面取数据是比较方便的
              * 这里"?"代表的是一种数据类型,如HeartRate
+             * ?是通配符
              */
             //Iterable<? extends DataPoint<?>> dataPoints = dataPointGenerator.generateDataPoints(valueGroups);
             //打印list信息
@@ -273,7 +255,7 @@ public class DataGeneratorController {
         //test push data 代码
         String url = "http://192.168.0.129:8080/data";      //刑雄
         String url1 = "http://192.168.0.163:8080/data";    //文山
-        pushTest(url, data);
+        //pushTest(url, data);
         log.info("A total of {} data point(s) have been written.", totalWritten);
     }
 
@@ -498,6 +480,36 @@ public class DataGeneratorController {
         return "Request is Valid, generates data:"+totalWritten;
     }
 
+    @GetMapping("/test/transfer")
+    public void testTransfer() throws IOException {
+        String filePath = "data/000/2018-1-1/body-weight.json";
+        BodyWeightDTOTransfer transfer = new BodyWeightDTOTransfer();
+        List<BodyWeightDTO> measureDTOS = new ArrayList<>();
+        File file = new File(filePath);
+
+        BufferedReader reader = null;
+        try (FileReader fileReader = new FileReader(file)) {
+            reader = new BufferedReader(fileReader);
+            String jsonStr = "";
+
+            //测试Transfer反序列化json数据
+            while ((jsonStr = reader.readLine()) != null) {
+                System.out.print(jsonStr);
+                MeasureDTO measureDTO = transfer.newMeasureDTOMapper(jsonStr);
+                System.out.print("      "+measureDTO.getTimeStamp());
+                System.out.println();
+                measureDTOS.add(transfer.newMeasureDTOMapper(jsonStr));
+            }
+            System.out.println(measureDTOS);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        reader.close();
+    }
+
 
     private void setMeasureGenerationRequestDefaults() {
 
@@ -653,5 +665,54 @@ public class DataGeneratorController {
          }
          csvWriter.write(sb.toString());
          csvWriter.newLine();
+    }
+
+    @GetMapping("/create/csv")
+    public void createData(){
+        setMeasureGenerationRequestDefaults();
+        for (MeasureGenerationRequest request:dataGenerationSettings.getMeasureGenerationRequests()){
+            if (request.getGeneratorName().equals("step-count")){
+                String name = request.getGeneratorName();
+                System.out.println("current name:"+name);
+                Iterable<TimestampedValueGroup> valueGroups = valueGroupGenerationService.generateValueGroups(request);
+                Iterable<? extends MeasureDTO> DTOlist = (dataTransferMap.get(name)).transferDatas(valueGroups);
+
+                String[] head = new String[]{"dateTime", name};
+                List<List<Object>> dataList = new ArrayList<>();
+                List<StepsDTO> stepsDTOS = (List<StepsDTO>)DTOlist;
+                for(TimestampedValueGroup valueGroup: valueGroups){
+                    List<Object> row = new ArrayList<>();
+                    String dateTime = offsetDateTime2String.convert(valueGroup.getTimestamp());
+                    row.add(dateTime);
+                    Integer stepCount = valueGroup.getValue("steps-per-minute").intValue();
+                    row.add(stepCount);
+                    dataList.add(row);
+                }
+                createCSV(head, dataList, "stepCount.csv");
+            }
+        }
+    }
+
+    public List<EcgDetailDTO> getEcgDetail(EcgRecordDTO record){
+        List<EcgDetailDTO> details = new ArrayList<>();
+        Long identifier = record.getTimeStamp();
+        Integer frequency = record.getSamplingFrequency();
+        Integer spendTime = 30;
+        int num = (int)Math.pow(30,2)/frequency;
+        LocalDateTime localDateTime = Instant.ofEpochSecond(record.getTimeStamp()).atOffset(ZoneOffset.UTC).toLocalDateTime();
+        OffsetDateTime dateTime = OffsetDateTime.of(localDateTime, ZoneOffset.UTC);
+
+        //这里我必须自己使用一个抖动函数
+        //而且保证平均值不变
+        for(int i=0;i<num;i++){
+
+            EcgDetailDTO detail = new EcgDetailDTO.Builder(record.getEcgRecord().doubleValue(), identifier)
+                    .setEcgLead(record.getEcgLead())
+                    .setTimestamp(dateTime.plusSeconds(i))
+                    .build();
+            details.add(detail);
+        }
+
+        return details;
     }
 }

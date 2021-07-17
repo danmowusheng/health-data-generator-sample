@@ -1,5 +1,6 @@
 package org.openmhealth.data.generator.transfer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.openmhealth.data.generator.domain.TimestampedValueGroup;
 import org.openmhealth.data.generator.dto.EcgDetailDTO;
 import org.springframework.stereotype.Component;
@@ -25,9 +26,14 @@ public class ECGDetailDTOTransfer extends AbstractTransfer<EcgDetailDTO>{
 
     @Override
     public EcgDetailDTO newMeasureDTO(TimestampedValueGroup timestampedValueGroup) {
-        return new EcgDetailDTO.Builder(timestampedValueGroup.getValue(VOLTAGE_KEY))
-                    .setmField(ECG_TYPE)
+        return new EcgDetailDTO.Builder(timestampedValueGroup.getValue(VOLTAGE_KEY), 100l)
+                    .setEcgLead(ECG_TYPE)       //一个identifier对应多个Detail
                     .setTimestamp(timestampedValueGroup.getTimestamp())
                     .build();
+    }
+
+    @Override
+    public EcgDetailDTO newMeasureDTOMapper(String jsonString) throws JsonProcessingException {
+        return objectMapper.readValue(jsonString,EcgDetailDTO.class);
     }
 }

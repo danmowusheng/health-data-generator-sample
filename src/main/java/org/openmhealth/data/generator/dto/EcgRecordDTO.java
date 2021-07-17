@@ -1,8 +1,6 @@
 package org.openmhealth.data.generator.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import org.openmhealth.schema.serializer.SerializationConstructor;
 
 /**
@@ -19,20 +17,20 @@ public class EcgRecordDTO extends MeasureDTO{
     /*
     平均心率
     */
-    private Integer avgHeartRate;
-
-    /*
-    心电
-     */
-    private Double ecg;
+    private Integer ecgRecord;
 
     /*
     心电类型
      */
-    private Integer ecgType;
+    private Integer ecgLead;
 
     /*
-    心率类型
+    标识（ecg_record的开始时间）
+    */
+    private Long identifier;
+
+    /*
+     心率失常类型
      */
     private Integer ecgArrhythmiaType;
 
@@ -42,7 +40,7 @@ public class EcgRecordDTO extends MeasureDTO{
     private Integer userSymptom;
 
     /*
-    示例频率
+    取样频率
      */
     private Integer samplingFrequency;
 
@@ -52,16 +50,20 @@ public class EcgRecordDTO extends MeasureDTO{
     }
 
     public static class Builder extends MeasureDTO.Builder<EcgRecordDTO, Builder>{
-        private Integer avgHeartRate;
-        private Integer ecgType;
-        private Double ecg;
+        private Integer ecgRecord;
+        private Integer ecgLead;
         private Integer ecgArrhythmiaType;
         private Integer userSymptom;
         private Integer samplingFrequency;
+        private Long identifier;
 
-        public Builder (Double ecg, Integer avgHeartRate) {
-            this.ecg = ecg;
-            this.avgHeartRate = avgHeartRate;
+        public Builder (Integer ecgRecord) {
+            this.ecgRecord = ecgRecord;
+        }
+
+        public Builder setIdentifier(Long identifier){
+            this.identifier = identifier;
+            return this;
         }
 
         public Builder setSamplingFrequency(Integer samplingFrequency){
@@ -69,8 +71,8 @@ public class EcgRecordDTO extends MeasureDTO{
             return this;
         }
 
-        public Builder setEcgType(Integer ecgType){
-            this.ecgType = ecgType;
+        public Builder setEcgLead(Integer ecgLead){
+            this.ecgLead = ecgLead;
             return this;
         }
 
@@ -91,12 +93,9 @@ public class EcgRecordDTO extends MeasureDTO{
         }
     }
 
-    public Double getEcg() {
-        return ecg;
-    }
 
-    public Integer getEcgType() {
-        return ecgType;
+    public Integer getEcgLead() {
+        return ecgLead;
     }
 
     public Integer getEcgArrhythmiaType() {
@@ -111,14 +110,33 @@ public class EcgRecordDTO extends MeasureDTO{
         return samplingFrequency;
     }
 
-    private EcgRecordDTO(Builder builder){
-        super(builder);
-        this.ecg = builder.ecg;
-        this.ecgArrhythmiaType = builder.ecgArrhythmiaType;
-        this.ecgType = builder.ecgType;
-        this.samplingFrequency = builder.samplingFrequency;
-        this.userSymptom = builder.userSymptom;
-        this.avgHeartRate = builder.avgHeartRate;
+    public Integer getEcgRecord() {
+        return ecgRecord;
     }
 
+    public Long getIdentifier() {
+        return identifier;
+    }
+
+    private EcgRecordDTO(Builder builder){
+        super(builder);
+        this.identifier = builder.identifier;
+        this.ecgArrhythmiaType = builder.ecgArrhythmiaType;
+        this.ecgLead = builder.ecgLead;
+        this.samplingFrequency = builder.samplingFrequency;
+        this.userSymptom = builder.userSymptom;
+        this.ecgRecord = builder.ecgRecord;
+    }
+
+    @Override
+    public String toString() {
+        return "EcgRecordDTO{" +
+                "ecgRecord=" + ecgRecord +
+                ", ecgLead=" + ecgLead +
+                ", identifier=" + identifier +
+                ", ecgArrhythmiaType=" + ecgArrhythmiaType +
+                ", userSymptom=" + userSymptom +
+                ", samplingFrequency=" + samplingFrequency +
+                '}';
+    }
 }

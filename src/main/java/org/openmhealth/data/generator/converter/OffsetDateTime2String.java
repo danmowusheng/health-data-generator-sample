@@ -1,6 +1,7 @@
 package org.openmhealth.data.generator.converter;
 
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
 import java.time.OffsetDateTime;
 
@@ -10,6 +11,7 @@ import java.time.OffsetDateTime;
  * @create: 2021-06-23 19:09
  * @description：将offsetDateTime转变成便于文件命名的字符串
  **/
+@Component
 public class OffsetDateTime2String implements Converter<OffsetDateTime, String> {
     @Override
     public String convert(OffsetDateTime source){

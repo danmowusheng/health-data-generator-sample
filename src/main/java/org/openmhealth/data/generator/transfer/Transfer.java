@@ -1,9 +1,13 @@
 package org.openmhealth.data.generator.transfer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openmhealth.data.generator.domain.TimestampedValueGroup;
 import org.openmhealth.data.generator.dto.MeasureDTO;
 
 public interface Transfer<T extends MeasureDTO> {
+
+
 
     String getName();
 
@@ -12,4 +16,6 @@ public interface Transfer<T extends MeasureDTO> {
      * @return transfer these data to measureDTO
      */
     Iterable<T> transferDatas(Iterable<TimestampedValueGroup> valueGroups);
+
+    T newMeasureDTOMapper(String jsonString) throws JsonProcessingException;
 }

@@ -54,11 +54,13 @@ import static java.time.temporal.ChronoUnit.SECONDS;
  * @author: LJ
  * @create: 2021-07-07 09:50
  * @description：controller for push data
+ * get the generated data of this day from file, and load these data in lists
+ * when the timeStamp is surpass by the current timeStamp, then push a bach of data.
  **/
 @RestController("/pushData")
 public class DataPushController {
     //Service
-    private static final Logger log = LoggerFactory.getLogger(Application.class);
+    private static final Logger log = LoggerFactory.getLogger(DataPushController.class);
 
     @Autowired
     private DataGenerationSettings dataGenerationSettings;
@@ -176,9 +178,6 @@ public class DataPushController {
         return "接收成功";
     }
 
-    public void test(){
-
-    }
 
     private void setMeasureGenerationRequestDefaults() {
 

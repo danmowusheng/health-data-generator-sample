@@ -22,20 +22,20 @@ public class LocationSampleDTO extends MeasureDTO{
     /*
     必备指标
      */
-    private Integer mField;
+    private Integer gpsType;
 
 
 
     public static class Builder extends MeasureDTO.Builder<LocationSampleDTO, LocationSampleDTO.Builder>{
         private Double locationSample;
-        private Integer mField;
+        private Integer gpsType;
 
         public Builder (Double locationSample) {
             this.locationSample = locationSample;
         }
 
-        public Builder setmField(Integer mField) {
-            this.mField = mField;
+        public Builder setGpsType(Integer gpsType) {
+            this.gpsType = gpsType;
             return this;
         }
 
@@ -47,7 +47,7 @@ public class LocationSampleDTO extends MeasureDTO{
 
     private LocationSampleDTO(Builder builder){
         super(builder);
-        this.mField = builder.mField;
+        this.gpsType = builder.gpsType;
         this.location = builder.locationSample;
     }
 
@@ -59,15 +59,15 @@ public class LocationSampleDTO extends MeasureDTO{
         return location;
     }
 
-    public Integer getmField() {
-        return mField;
+    public Integer getGpsType() {
+        return gpsType;
     }
 
     @Override
     public String toString() {
         return "LocationSampleDTO{" +
-                "locationSample=" + location +
-                ", mField=" + mField +
+                "location=" + location +
+                ", gpsType=" + gpsType +
                 '}';
     }
 }

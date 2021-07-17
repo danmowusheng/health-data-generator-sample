@@ -1,9 +1,6 @@
 package org.openmhealth.data.generator.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import org.openmhealth.data.generator.constant.HeartRate;
 import org.openmhealth.schema.serializer.SerializationConstructor;
 
 /**
@@ -25,7 +22,7 @@ public class HeartRateDTO extends MeasureDTO{
     /*
     测量类型
      */
-    private Integer mField;
+    private Integer bpmMode;
 
     @SerializationConstructor
     protected HeartRateDTO() {
@@ -34,14 +31,14 @@ public class HeartRateDTO extends MeasureDTO{
     public static class Builder extends MeasureDTO.Builder<HeartRateDTO, Builder>{
 
         private Integer heartRate;
-        private Integer mField;
+        private Integer bpmMode;
 
         public Builder (Integer heartRate) {
             this.heartRate = heartRate;
         }
 
-        public Builder setmField(Integer mField) {
-            this.mField = mField;
+        public Builder setBpmMode(Integer bpmMode) {
+            this.bpmMode = bpmMode;
             return this;
         }
 
@@ -53,7 +50,7 @@ public class HeartRateDTO extends MeasureDTO{
 
     private HeartRateDTO(Builder builder) {
         super(builder);
-        this.mField = builder.mField;
+        this.bpmMode = builder.bpmMode;
         this.heartRate = builder.heartRate;
     }
 
@@ -61,15 +58,15 @@ public class HeartRateDTO extends MeasureDTO{
         return heartRate;
     }
 
-    public Integer getmField() {
-        return mField;
+    public Integer getBpmMode() {
+        return bpmMode;
     }
 
     @Override
     public String toString() {
         return "HeartRateDTO{" +
                 "heartRate=" + heartRate +
-                ", mField=" + mField +
+                ", bpmMode=" + bpmMode +
                 '}';
     }
 }

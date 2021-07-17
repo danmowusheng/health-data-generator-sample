@@ -1,5 +1,6 @@
 package org.openmhealth.data.generator.transfer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.openmhealth.data.generator.constant.BodyWeight;
 import org.openmhealth.data.generator.domain.TimestampedValueGroup;
 import org.openmhealth.data.generator.dto.BodyWeightDTO;
@@ -27,8 +28,13 @@ public class BodyWeightDTOTransfer extends AbstractTransfer<BodyWeightDTO> {
     public BodyWeightDTO newMeasureDTO(TimestampedValueGroup timestampedValueGroup) {
         return new BodyWeightDTO.Builder(timestampedValueGroup.getValue(WEIGHT_KEY))
                 .setTimestamp(timestampedValueGroup.getTimestamp())
-                .setmField(1)
+                .setWeightType(1)
                 .build();
+    }
+
+    public BodyWeightDTO newMeasureDTOMapper(String jsonString) throws JsonProcessingException {
+
+        return objectMapper.readValue(jsonString, BodyWeightDTO.class);
     }
 
 
