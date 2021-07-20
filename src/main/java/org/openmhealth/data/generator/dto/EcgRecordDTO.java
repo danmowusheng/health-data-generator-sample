@@ -118,6 +118,10 @@ public class EcgRecordDTO extends MeasureDTO{
         return identifier;
     }
 
+    public void setEcgRecord(Integer ecgRecord) {
+        this.ecgRecord = ecgRecord;
+    }
+
     private EcgRecordDTO(Builder builder){
         super(builder);
         this.identifier = builder.identifier;

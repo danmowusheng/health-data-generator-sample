@@ -18,10 +18,10 @@ data:
 
   # data is generated according to these optional default values unless overridden in the measures
   # the earliest date time of the measures to generate, defaults to January 1st, 2014 at noon UTC
-  start-date-time: 2021-07-08T08:00:00Z
+  start-date-time: 2021-07-09T08:00:00Z
 
   # the latest date time of the measures to generate, defaults to January 1st, 2015 at noon UTC
-  end-date-time: 2021-07-08T14:00:00Z
+  end-date-time: 2021-07-09T14:00:00Z
 
   # the mean duration between the effective time frames of consecutive measures, defaults to 24 hours
   # this is specified in ISO8601 duration format, see https://www.ietf.org/rfc/rfc3339.txt page 12

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
  * @create: 2021-07-16 14:31
  * @description：
  **/
+@Component
 public class GeoPositionDTOTransfer extends AbstractTransfer<GeoPositionDTO> {
     public static final String LATITUDE = "latitude";
     public static final String LONGITUDE = "longitude";

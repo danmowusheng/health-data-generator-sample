@@ -68,7 +68,7 @@ public class JsonObject {
             case "heart-rate":
                 this.heartRate = (List<HeartRateDTO>) DTOlist;
                 break;
-            case "geo-position":
+            case "geo-detail":
                 this.locationSample = (List<LocationSampleDTO>) DTOlist;
                 break;
             case "sleep-duration":
@@ -83,6 +83,8 @@ public class JsonObject {
             case "oxygen-saturation":
                 this.spo2 = (List<Spo2DTO>) DTOlist;
                 break;
+            default:
+                throw new RuntimeException("没有这个name对应列表！！！！");
         }
     }
 

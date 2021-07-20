@@ -23,6 +23,9 @@ public class OffsetDateTime2String implements Converter<OffsetDateTime, String> 
         StringBuilder sb = new StringBuilder();
         sb.append(source.getYear());
         sb.append("-");
+        if(source.getMonth().getValue()<10){
+            sb.append(0);
+        }
         sb.append(source.getMonth().getValue());
         sb.append("-");
         sb.append(source.getDayOfMonth());

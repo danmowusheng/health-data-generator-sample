@@ -20,7 +20,7 @@ public class LocationSampleDTOTransfer extends AbstractTransfer<LocationSampleDT
 
     @Override
     public String getName(){
-        return "geo-position";
+        return "geo-detail";
     }
 
     @Override
